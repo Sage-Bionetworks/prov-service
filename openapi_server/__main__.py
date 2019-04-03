@@ -2,12 +2,11 @@
 
 import connexion
 
-from openapi_server import encoder
+from openapi_server import config
 
 
 def main():
-    app = connexion.App(__name__, specification_dir='./openapi/')
-    app.app.json_encoder = encoder.JSONEncoder
+    app = config.connex_app
     app.add_api('openapi.yaml', arguments={'title': 'Platform Repository Service'})
     app.run(port=8080)
 
