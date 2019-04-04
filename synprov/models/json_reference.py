@@ -5,8 +5,8 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from openapi_server.models.base_model_ import Model
-from openapi_server import util
+from synprov.models.base_model_ import Model
+from synprov import util
 
 
 class JsonReference(Model):
@@ -51,7 +51,6 @@ class JsonReference(Model):
     def target_version_number(self):
         """Gets the target_version_number of this JsonReference.
 
-          # noqa: E501
 
         :return: The target_version_number of this JsonReference.
         :rtype: float
@@ -62,7 +61,6 @@ class JsonReference(Model):
     def target_version_number(self, target_version_number):
         """Sets the target_version_number of this JsonReference.
 
-          # noqa: E501
 
         :param target_version_number: The target_version_number of this JsonReference.
         :type target_version_number: float
@@ -74,7 +72,6 @@ class JsonReference(Model):
     def target_id(self):
         """Gets the target_id of this JsonReference.
 
-          # noqa: E501
 
         :return: The target_id of this JsonReference.
         :rtype: str
@@ -85,7 +82,6 @@ class JsonReference(Model):
     def target_id(self, target_id):
         """Sets the target_id of this JsonReference.
 
-          # noqa: E501
 
         :param target_id: The target_id of this JsonReference.
         :type target_id: str

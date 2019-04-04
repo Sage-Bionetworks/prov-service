@@ -5,8 +5,8 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from openapi_server.models.base_model_ import Model
-from openapi_server import util
+from synprov.models.base_model_ import Model
+from synprov import util
 
 
 class JsonUsed(Model):
@@ -51,7 +51,6 @@ class JsonUsed(Model):
     def concrete_type(self):
         """Gets the concrete_type of this JsonUsed.
 
-          # noqa: E501
 
         :return: The concrete_type of this JsonUsed.
         :rtype: str
@@ -62,7 +61,6 @@ class JsonUsed(Model):
     def concrete_type(self, concrete_type):
         """Sets the concrete_type of this JsonUsed.
 
-          # noqa: E501
 
         :param concrete_type: The concrete_type of this JsonUsed.
         :type concrete_type: str
@@ -74,7 +72,6 @@ class JsonUsed(Model):
     def was_executed(self):
         """Gets the was_executed of this JsonUsed.
 
-          # noqa: E501
 
         :return: The was_executed of this JsonUsed.
         :rtype: bool
@@ -85,7 +82,6 @@ class JsonUsed(Model):
     def was_executed(self, was_executed):
         """Sets the was_executed of this JsonUsed.
 
-          # noqa: E501
 
         :param was_executed: The was_executed of this JsonUsed.
         :type was_executed: bool

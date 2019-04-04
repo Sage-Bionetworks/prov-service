@@ -2,12 +2,12 @@
 
 import connexion
 
-from openapi_server import config
+from synprov import config
 
 
 def main():
     app = config.connex_app
-    app.add_api('openapi.yaml', arguments={'title': 'Platform Repository Service'})
+    app.add_api('openapi.yaml', arguments={'title': 'Provenance Service'})
     app.run(port=8080)
 
 

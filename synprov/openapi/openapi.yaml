@@ -1,13 +1,13 @@
 openapi: 3.0.1
 info:
   description: <h1>Platform Repository Service</h1><p>Sage Bionetworks Platform</p>
-  title: Platform Repository Service
+  title: Provenance Service
   version: develop-SNAPSHOT
 servers:
 - url: ///rest
 tags:
 - description: "."
-  name: ActivityController
+  name: Activities
 paths:
   /repo/v1/activity:
     post:
@@ -26,11 +26,13 @@ paths:
       operationId: create_activity
       parameters:
       - description: The user that is doing the create.
+        explode: true
         in: query
         name: user_id
         required: true
         schema:
           type: number
+        style: form
       requestBody:
         content:
           application/json:
@@ -68,12 +70,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/json_Activity'
-          description: ""
+          description: "."
       summary: Create a new.
       tags:
-      - ActivityController
+      - Activities
       x-codegen-request-body-name: body
-      x-openapi-router-controller: openapi_server.controllers.activity_controller_controller
+      x-openapi-router-controller: synprov.controllers.activities_controller
   /repo/v1/activity/{id}:
     delete:
       description: |-
@@ -83,17 +85,21 @@ paths:
       operationId: delete_activity
       parameters:
       - description: The id of activity to delete.
+        explode: false
         in: path
         name: id
         required: true
         schema:
           type: string
+        style: simple
       - description: The user that is deleting the activity.
+        explode: true
         in: query
         name: user_id
         required: true
         schema:
           type: number
+        style: form
       requestBody:
         content:
           application/json:
@@ -114,15 +120,14 @@ paths:
           content:
             application/json:
               schema:
-                description: ""
                 format: binary
                 type: string
-          description: ""
+          description: "."
       summary: Delete an.
       tags:
-      - ActivityController
+      - Activities
       x-codegen-request-body-name: body
-      x-openapi-router-controller: openapi_server.controllers.activity_controller_controller
+      x-openapi-router-controller: synprov.controllers.activities_controller
     get:
       description: |-
         Get an existing <a
@@ -134,17 +139,21 @@ paths:
       operationId: get_activity
       parameters:
       - description: The ID of the activity to fetch.
+        explode: false
         in: path
         name: id
         required: true
         schema:
           type: string
+        style: simple
       - description: The user that is doing the get.
+        explode: true
         in: query
         name: user_id
         required: true
         schema:
           type: number
+        style: form
       requestBody:
         content:
           application/json:
@@ -172,12 +181,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/json_Activity'
-          description: ""
+          description: "."
       summary: Get an existing.
       tags:
-      - ActivityController
+      - Activities
       x-codegen-request-body-name: body
-      x-openapi-router-controller: openapi_server.controllers.activity_controller_controller
+      x-openapi-router-controller: synprov.controllers.activities_controller
     put:
       description: |-
         Update an <a
@@ -186,17 +195,21 @@ paths:
       operationId: update_activity
       parameters:
       - description: The id of the activity to update.
+        explode: false
         in: path
         name: id
         required: true
         schema:
           type: string
+        style: simple
       - description: The user that is doing the update.
+        explode: true
         in: query
         name: user_id
         required: true
         schema:
           type: number
+        style: form
       requestBody:
         content:
           application/json:
@@ -218,12 +231,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/json_Activity'
-          description: ""
+          description: "."
       summary: Update an.
       tags:
-      - ActivityController
+      - Activities
       x-codegen-request-body-name: body
-      x-openapi-router-controller: openapi_server.controllers.activity_controller_controller
+      x-openapi-router-controller: synprov.controllers.activities_controller
   /repo/v1/activity/{id}/generated:
     get:
       description: |-
@@ -243,26 +256,38 @@ paths:
         </p>
       operationId: get_entities_generated_by
       parameters:
-      - in: path
+      - explode: false
+        in: path
         name: id
         required: true
         schema:
           type: string
-      - in: query
+        style: simple
+      - explode: true
+        in: query
         name: limit
+        required: false
         schema:
           default: 10
+          format: int32
           type: integer
-      - in: query
+        style: form
+      - explode: true
+        in: query
         name: offset
+        required: false
         schema:
           default: 0
+          format: int32
           type: integer
-      - in: query
+        style: form
+      - explode: true
+        in: query
         name: user_id
         required: true
         schema:
           type: number
+        style: form
       responses:
         200:
           content:
@@ -272,15 +297,14 @@ paths:
             application/xml:
               schema:
                 $ref: '#/components/schemas/json_PaginatedResultsOfReference'
-          description: ""
+          description: "."
       summary: "."
       tags:
-      - ActivityController
-      x-openapi-router-controller: openapi_server.controllers.activity_controller_controller
+      - Activities
+      x-openapi-router-controller: synprov.controllers.activities_controller
 components:
   schemas:
     json_Activity:
-      description: ""
       example:
         id: '...'
         used:
@@ -297,38 +321,28 @@ components:
         description: '...'
       properties:
         id:
-          description: ""
           type: string
         used:
-          description: ""
           items:
             $ref: '#/components/schemas/json_Used'
           type: array
         createdBy:
-          description: ""
           type: string
         etag:
-          description: ""
           type: string
         modifiedOn:
-          description: ""
           type: number
         modifiedBy:
-          description: ""
           type: string
         createdOn:
-          description: ""
           type: number
         name:
-          description: ""
           type: string
         description:
-          description: ""
           type: string
       title: Activity
       type: object
     json_PaginatedResultsOfReference:
-      description: ""
       example:
         results:
         - targetVersionNumber: 12345
@@ -339,44 +353,35 @@ components:
         totalNumberOfResults: 12345
       properties:
         results:
-          description: ""
           items:
             $ref: '#/components/schemas/json_Reference'
           type: array
         effectiveSchema:
-          description: ""
           type: string
         totalNumberOfResults:
-          description: ""
           format: int64
           type: integer
       title: PaginatedResultsOfReference
       type: object
     json_Reference:
-      description: ""
       example:
         targetVersionNumber: 12345
         targetId: '...'
       properties:
         targetVersionNumber:
-          description: ""
           type: number
         targetId:
-          description: ""
           type: string
       title: Reference
       type: object
     json_Used:
-      description: ""
       example:
         concreteType: '...'
         wasExecuted: true
       properties:
         concreteType:
-          description: ""
           type: string
         wasExecuted:
-          description: ""
           type: boolean
       title: Used
       type: object

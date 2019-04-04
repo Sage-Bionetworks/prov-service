@@ -6,13 +6,13 @@ import unittest
 from flask import json
 from six import BytesIO
 
-from openapi_server.models.json_activity import JsonActivity  # noqa: E501
-from openapi_server.models.json_paginated_results_of_reference import JsonPaginatedResultsOfReference  # noqa: E501
-from openapi_server.test import BaseTestCase
+from synprov.models.json_activity import JsonActivity  # noqa: E501
+from synprov.models.json_paginated_results_of_reference import JsonPaginatedResultsOfReference  # noqa: E501
+from synprov.test import BaseTestCase
 
 
-class TestActivityControllerController(BaseTestCase):
-    """ActivityControllerController integration test stubs"""
+class TestActivitiesController(BaseTestCase):
+    """ActivitiesController integration test stubs"""
 
     def test_create_activity(self):
         """Test case for create_activity

@@ -3,7 +3,7 @@
 import connexion
 
 from flask_pymongo import PyMongo
-from openapi_server import encoder
+from synprov import encoder
 
 
 connex_app = connexion.App(__name__, specification_dir='./openapi/')
