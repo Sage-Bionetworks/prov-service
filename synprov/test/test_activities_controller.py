@@ -6,8 +6,7 @@ import unittest
 from flask import json
 from six import BytesIO
 
-from synprov.models.json_activity import JsonActivity  # noqa: E501
-from synprov.models.json_paginated_results_of_reference import JsonPaginatedResultsOfReference  # noqa: E501
+from synprov.models.activity import Activity  # noqa: E501
 from synprov.test import BaseTestCase
 
 
@@ -77,24 +76,6 @@ class TestActivitiesController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_get_entities_generated_by(self):
-        """Test case for get_entities_generated_by
-
-        .
-        """
-        query_string = [('limit', 10),
-                        ('offset', 0),
-                        ('user_id', 3.4)]
-        headers = { 
-            'Accept': 'application/json',
-        }
-        response = self.client.open(
-            '/rest/repo/v1/activity/{id}/generated'.format(id='id_example'),
-            method='GET',
-            headers=headers,
-            query_string=query_string)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
 
     def test_update_activity(self):
         """Test case for update_activity
