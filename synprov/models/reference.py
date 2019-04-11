@@ -15,30 +15,30 @@ class Reference(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, entity_version_number=None, entity_id=None, role=None):  # noqa: E501
+    def __init__(self, target_version_number=None, target_id=None, role=None):  # noqa: E501
         """Reference - a model defined in OpenAPI
 
-        :param entity_version_number: The entity_version_number of this Reference.  # noqa: E501
-        :type entity_version_number: int
-        :param entity_id: The entity_id of this Reference.  # noqa: E501
-        :type entity_id: str
+        :param target_version_number: The target_version_number of this Reference.  # noqa: E501
+        :type target_version_number: int
+        :param target_id: The target_id of this Reference.  # noqa: E501
+        :type target_id: str
         :param role: The role of this Reference.  # noqa: E501
         :type role: str
         """
         self.openapi_types = {
-            'entity_version_number': int,
-            'entity_id': str,
+            'target_version_number': int,
+            'target_id': str,
             'role': str
         }
 
         self.attribute_map = {
-            'entity_version_number': 'entityVersionNumber',
-            'entity_id': 'entityId',
+            'target_version_number': 'targetVersionNumber',
+            'target_id': 'targetId',
             'role': 'role'
         }
 
-        self._entity_version_number = entity_version_number
-        self._entity_id = entity_id
+        self._target_version_number = target_version_number
+        self._target_id = target_id
         self._role = role
 
     @classmethod
@@ -53,46 +53,46 @@ class Reference(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def entity_version_number(self):
-        """Gets the entity_version_number of this Reference.
+    def target_version_number(self):
+        """Gets the target_version_number of this Reference.
 
 
-        :return: The entity_version_number of this Reference.
+        :return: The target_version_number of this Reference.
         :rtype: int
         """
-        return self._entity_version_number
+        return self._target_version_number
 
-    @entity_version_number.setter
-    def entity_version_number(self, entity_version_number):
-        """Sets the entity_version_number of this Reference.
+    @target_version_number.setter
+    def target_version_number(self, target_version_number):
+        """Sets the target_version_number of this Reference.
 
 
-        :param entity_version_number: The entity_version_number of this Reference.
-        :type entity_version_number: int
+        :param target_version_number: The target_version_number of this Reference.
+        :type target_version_number: int
         """
 
-        self._entity_version_number = entity_version_number
+        self._target_version_number = target_version_number
 
     @property
-    def entity_id(self):
-        """Gets the entity_id of this Reference.
+    def target_id(self):
+        """Gets the target_id of this Reference.
 
 
-        :return: The entity_id of this Reference.
+        :return: The target_id of this Reference.
         :rtype: str
         """
-        return self._entity_id
+        return self._target_id
 
-    @entity_id.setter
-    def entity_id(self, entity_id):
-        """Sets the entity_id of this Reference.
+    @target_id.setter
+    def target_id(self, target_id):
+        """Sets the target_id of this Reference.
 
 
-        :param entity_id: The entity_id of this Reference.
-        :type entity_id: str
+        :param target_id: The target_id of this Reference.
+        :type target_id: str
         """
 
-        self._entity_id = entity_id
+        self._target_id = target_id
 
     @property
     def role(self):

@@ -2,12 +2,16 @@ import connexion
 import six
 import uuid
 
-from synprov.models.activity import Activity  # noqa: E501
-from synprov.models.activity_request import ActivityRequest  # noqa: E501
-from synprov import util
+from mongoengine.errors import NotUniqueError
+
+from synprov.models.mongoengine import Activity  # noqa: E501
+from synprov.models.mongoengine import Agent  # noqa: E501
+from synprov.models.mongoengine import Reference  # noqa: E501
+from synprov.util import convert_keys
 from synprov.config import mongo
 
 
+@convert_keys
 def create_activity(body):  # noqa: E501
     """Create a new.
 
@@ -18,12 +22,29 @@ def create_activity(body):  # noqa: E501
 
     :rtype: Activity
     """
-    # if connexion.request.is_json:
-    #     body = JsonActivityRequest.from_dict(connexion.request.get_json())  # noqa: E501
+    for u in body['used']:
+        try:
+            Reference(**u).save()
+        except NotUniqueError:
+            continue
+
+    for generated in body['generated']:
+        try:
+            Reference(**generated).save()
+        except NotUniqueError:
+            continue
+
+    for a in body['agents']:
+        try:
+            Agent(**a).save()
+        except NotUniqueError:
+            continue
+    
     activity = Activity(**body)
-    activity.id = uuid.uuid4().hex
-    activity_id = mongo.db.activities.insert_one(activity.to_dict()).inserted_id
-    return Activity.from_dict(mongo.db.activities.find_one({'_id': activity_id}))
+    activity.activity_id = uuid.uuid4().hex
+    activity.save()
+
+    return activity.to_json()
 
 
 def delete_activity(id):  # noqa: E501
@@ -39,6 +60,7 @@ def delete_activity(id):  # noqa: E501
     return 'do some magic!'
 
 
+@convert_keys
 def get_activity(id):  # noqa: E501
     """Get an existing.
 
@@ -49,9 +71,10 @@ def get_activity(id):  # noqa: E501
 
     :rtype: Activity
     """
-    return Activity.from_dict(mongo.db.activities.find_one({'id': id}))
+    return Activity.objects(activity_id=id).to_json()
 
 
+@convert_keys
 def list_activities():  # noqa: E501
     """.
 
@@ -60,9 +83,10 @@ def list_activities():  # noqa: E501
 
     :rtype: List[Activity]
     """
-    return 'do some magic!'
+    return Activity.objects().to_json()
 
 
+@convert_keys
 def update_activity(id, body=None):  # noqa: E501
     """Update an.
 
@@ -75,6 +99,4 @@ def update_activity(id, body=None):  # noqa: E501
 
     :rtype: Activity
     """
-    if connexion.request.is_json:
-        body = ActivityRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'

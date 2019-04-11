@@ -236,6 +236,14 @@ components:
           items:
             $ref: '#/components/schemas/Reference'
           type: array
+        generated:
+          items:
+            $ref: '#/components/schemas/Reference'
+          type: array
+        agents:
+          items:
+            $ref: '#/components/schemas/Agent'
+          type: array
         name:
           type: string
         description:
@@ -247,11 +255,11 @@ components:
         modifiedOn: 2000-01-23T04:56:07.000+00:00
         generated:
         - role: role
-          entityId: entityId
-          entityVersionNumber: 0
+          targetId: entityId
+          targetVersionNumber: 0
         - role: role
-          entityId: entityId
-          entityVersionNumber: 0
+          targetId: entityId
+          targetVersionNumber: 0
         createdBy: createdBy
         name: name
         description: description
@@ -260,11 +268,11 @@ components:
         id: id
         used:
         - role: role
-          entityId: entityId
-          entityVersionNumber: 0
+          targetId: entityId
+          targetVersionNumber: 0
         - role: role
-          entityId: entityId
-          entityVersionNumber: 0
+          targetId: entityId
+          targetVersionNumber: 0
         createdOn: 2000-01-23T04:56:07.000+00:00
         agents:
         - agentId: agentId
@@ -307,13 +315,13 @@ components:
     Reference:
       example:
         role: role
-        entityId: entityId
-        entityVersionNumber: 0
+        targetId: entityId
+        targetVersionNumber: 0
       properties:
-        entityVersionNumber:
+        targetVersionNumber:
           format: int32
           type: integer
-        entityId:
+        targetId:
           type: string
         role:
           type: string

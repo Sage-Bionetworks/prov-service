@@ -1,7 +1,11 @@
 import datetime
-
+import humps
+import json
+import re
 import six
 import typing
+
+from functools import wraps
 
 
 def _deserialize(data, klass):
@@ -144,3 +148,41 @@ def _deserialize_dict(data, boxed_type):
     """
     return {k: _deserialize(v, boxed_type)
             for k, v in six.iteritems(data)}
+
+
+def _convert_keys(obj):
+    """
+    Convert keys in a dictionary (or nested dictionary) from snake_case
+    to camelCase; ignore '_id' keys.
+    
+    :param obj: A dict or list of dicts with string keys to be
+        converted.
+    :type obj: dict, list
+    :return: A dict or list of dicts with string keys converted from
+        snake_case to camelCase.
+    :rtype: dict, list
+    """
+    if isinstance(obj, list):
+        return [_convert_keys(i) for i in obj]
+    elif isinstance(obj, dict):
+        return {(humps.camelize(k.lstrip('_'))
+                 if not re.search('^_id', k)
+                 else k): _convert_keys(obj[k])
+                for k in obj}
+    else:
+        return obj
+
+
+def convert_keys(func):
+    """
+    Return a decorator that retrieves objects from the specified
+    collection, given a db connection and query.
+
+    :type collection: str
+    :param collection: String indicating the name of the collection
+    """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        response = func(*args, **kwargs)
+        return _convert_keys(json.loads(response))
+    return wrapper
