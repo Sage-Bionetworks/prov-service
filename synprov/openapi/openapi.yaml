@@ -1,8 +1,8 @@
 openapi: 3.0.1
 info:
-  description: <h1>Platform Repository Service</h1><p>Sage Bionetworks Platform</p>
+  description: <h1>Synapse Repository Services</h1><p>Sage Bionetworks Platform</p>
   title: Provenance Service
-  version: develop-SNAPSHOT
+  version: 0.1.0
 servers:
 - url: /rest
 tags:
