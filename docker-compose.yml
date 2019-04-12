@@ -1,0 +1,23 @@
+version: '3.2'
+
+services:
+  prov-server:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    image: prov-server
+    command: -m synprov
+    container_name: prov-server
+    ports:
+        - '8080:8080'
+    environment:
+        MONGODB_URI: 'mongodb://mongo:27017/provDB'
+    depends_on:
+        - mongo-dev
+
+  mongo-dev:
+    image: mongo
+    command: mongod --port 27017
+    container_name: mongo
+    ports:
+        - '27017:27017'
