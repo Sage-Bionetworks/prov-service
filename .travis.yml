@@ -9,6 +9,7 @@ install:
   # command to install test dependencies
   - "pip install -r test-requirements.txt"
   # command to install package
+  - "pip install ."
 # command to run tests
 # script: nosetests
 script: synprov
