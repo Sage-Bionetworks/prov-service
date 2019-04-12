@@ -47,13 +47,13 @@ tox
 
 To run the server on a Docker container, please execute the following from the root directory:
 
-```bash
-# building the image
-docker build -t synprov .
+> **Note:** In order to use the server container, which requires a MongoDB database connection, you should have [Docker Compose](https://docs.docker.com/compose/overview/) installed.
 
-# starting up a container
-docker run -p 8080:8080 synprov
+```bash
+docker-compose up --build
 ```
+
+After running this command, the URLs in the previous section should work.
 
 ## Development
 
