@@ -4,9 +4,9 @@ import uuid
 
 from mongoengine.errors import NotUniqueError
 
-from synprov.models.mongoengine import Activity  # noqa: E501
-from synprov.models.mongoengine import Agent  # noqa: E501
-from synprov.models.mongoengine import Reference  # noqa: E501
+from synprov.models import Activity  # noqa: E501
+from synprov.models import Agent  # noqa: E501
+from synprov.models import Reference  # noqa: E501
 from synprov.util import convert_keys
 from synprov.config import mongo
 

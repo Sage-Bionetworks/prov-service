@@ -3,10 +3,9 @@ from graphene import ObjectType, Schema
 from graphene.relay import Node
 from graphene_mongo import MongoengineConnectionField, MongoengineObjectType
 
-from synprov.models.mongoengine import Activity as ActivityModel
-from synprov.models.mongoengine import Agent as AgentModel
-from synprov.models.mongoengine import Reference as ReferenceModel
-from synprov.controllers.activities_controller import list_activities
+from synprov.models import Activity as ActivityModel
+from synprov.models import Agent as AgentModel
+from synprov.models import Reference as ReferenceModel
 
 
 class Reference(MongoengineObjectType):

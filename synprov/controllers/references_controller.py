@@ -1,7 +1,7 @@
 import connexion
 import six
 
-from synprov.models.reference import Reference  # noqa: E501
+from synprov.models import Reference  # noqa: E501
 from synprov import util
 
 

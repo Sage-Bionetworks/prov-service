@@ -2,7 +2,7 @@
 from mongoengine.errors import NotUniqueError
 
 from synprov.config import mongo
-from synprov.models.mongoengine import Activity, Agent, Reference
+from synprov.models import Activity, Agent, Reference
 
 
 def init_db():

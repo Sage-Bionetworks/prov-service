@@ -1,7 +1,7 @@
 import connexion
 import six
 
-from synprov.models.agent import Agent  # noqa: E501
+from synprov.models import Agent  # noqa: E501
 from synprov import util
 
 
