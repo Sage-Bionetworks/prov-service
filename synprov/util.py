@@ -27,17 +27,3 @@ def _convert_keys(obj):
     else:
         return obj
 
-
-def convert_keys(func):
-    """
-    Return a decorator that retrieves objects from the specified
-    collection, given a db connection and query.
-
-    :type collection: str
-    :param collection: String indicating the name of the collection
-    """
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        response = func(*args, **kwargs)
-        return _convert_keys(json.loads(response))
-    return wrapper
