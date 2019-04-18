@@ -4,7 +4,7 @@ info:
   title: Provenance Service
   version: 0.1.0
 servers:
-- url: /rest/prov/v1
+- url: /rest/v1
 tags:
 - description: "."
   name: Activities
