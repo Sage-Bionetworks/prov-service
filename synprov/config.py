@@ -3,23 +3,22 @@
 import os
 import connexion
 
-from flask_mongoengine import MongoEngine
+from flask_neomodel import NeoModel
 
 from synprov import encoder
 
 
 connex_app = connexion.App(__name__, specification_dir='./openapi/')
 
-local_uri = 'mongodb://localhost:27017/provDB'
-env_uri = os.environ.get('MONGODB_URI')
-mongodb_host = env_uri if env_uri is not None else local_uri
-connex_app.app.config['MONGODB_SETTINGS'] = {
-    'db': 'provDB',
-    'host': mongodb_host,
-    'port': 27017
-}
+env_host = os.environ.get('NEO4J_HOST')
+neo4j_host = env_host if env_host is not None else 'localhost'
 
-mongo = MongoEngine(connex_app.app)
+neomod = NeoModel(connex_app.app, variables={
+    'user': 'client',
+    'password': 'neoclient',
+    'host': neo4j_host,
+    'port': 7687
+})
 
 # reset encoder
-connex_app.app.json_encoder = encoder.MongoEngineJSONEncoder
+# connex_app.app.json_encoder = encoder.MongoEngineJSONEncoder
