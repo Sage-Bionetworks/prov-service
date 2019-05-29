@@ -22,44 +22,10 @@ def create_activity(body):  # noqa: E501
 
     :rtype: Activity
     """
-    activity_props = {p: v for p, v in body.items()
-                      if p not in ['used', 'generated', 'agents']}
-    print(activity_props)
-    act = Activity(**humps.decamelize(activity_props))
-    act.activity_id = uuid.uuid4().hex
+    act = Activity(**humps.decamelize(body))
     act.save()
 
-    for u in body['used']:
-        ref = Reference(**humps.decamelize(u))
-        ref.hash()
-        try:
-            ref.save()
-        except UniqueProperty:
-            ref = Reference.nodes.get(reference_hash=ref.reference_hash)
-        act.used.connect(ref)
-
-    for g in body['generated']:
-        ref = Reference(**humps.decamelize(g))
-        ref.hash()
-        try:
-            ref.save()
-        except UniqueProperty:
-            ref = Reference.nodes.get(reference_hash=ref.reference_hash)
-        ref.activity.connect(act)
-
-    for a in body['agents']:
-        agt = Agent(**humps.decamelize(a))
-        try:
-            agt.save()
-        except UniqueProperty:
-            agt = Agent.nodes.get(agent_id=Agent.agent_id)
-        act.agents.connect(agt)
-
-
-    matcher = NodeMatcher(graph)
-    activity = matcher.match('Activity',
-                             activity_id={act.activity_id}).first()
-    return activity
+    return act.node
 
 
 def delete_activity(id):  # noqa: E501

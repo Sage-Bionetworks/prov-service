@@ -306,14 +306,14 @@ components:
         generated:
         - role: role
           targetId: entity2
-          targetVersionNumber: 0
+          targetVersionId: 1
         name: name
         description: agent1 generates entity2 from entity1
         id: id
         used:
         - role: role
           targetId: entity1
-          targetVersionNumber: 0
+          targetVersionId: 1
         agents:
         - agentId: agent1
           role: role
@@ -342,9 +342,9 @@ components:
       example:
         role: role
         targetId: entityId
-        targetVersionNumber: 0
+        targetVersionId: 1
       properties:
-        targetVersionNumber:
+        targetVersionId:
           format: int32
           type: integer
         targetId:

@@ -19,6 +19,7 @@ class Activity:
 
     def __init__(self,
                  activity_id=None,
+                 id='',
                  name='',
                  description='',
                  used=[],
