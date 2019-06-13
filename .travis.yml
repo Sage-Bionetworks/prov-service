@@ -26,5 +26,5 @@ install:
   - pip install .
 
 # command to run tests
-# script: nosetests
-script: timeout 10 synprov
+script:
+  - pytest
