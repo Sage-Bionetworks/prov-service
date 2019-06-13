@@ -5,8 +5,6 @@ import connexion
 
 from flask_neomodel import NeoModel
 
-from synprov import encoder
-
 
 connex_app = connexion.App(__name__, specification_dir='./openapi/')
 
@@ -19,6 +17,3 @@ neomod = NeoModel(connex_app.app, variables={
     'host': neo4j_host,
     'port': 7687
 })
-
-# reset encoder
-# connex_app.app.json_encoder = encoder.MongoEngineJSONEncoder
