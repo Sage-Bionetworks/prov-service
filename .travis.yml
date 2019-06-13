@@ -22,6 +22,8 @@ install:
   # command to install package
   - pip install .
 
+  - py2neo auth update --password neo4j - neo4j
+
   # command to run tests
 # script: nosetests
 script: synprov
