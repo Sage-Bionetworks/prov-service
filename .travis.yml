@@ -22,7 +22,7 @@ install:
   # command to install package
   - pip install .
 
-  - py2neo auth update --password neo4j - neo4j
+  - neo4j-admin set-initial-password mypassword
 
   # command to run tests
 # script: nosetests
