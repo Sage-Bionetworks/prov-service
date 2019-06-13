@@ -7,12 +7,16 @@ python:
 
 env:
   - NEO4J_VERSION="3.4.1"
+  - NEO4J_USERNAME="neo4j_test"
+  - NEO4J_PASSWORD="testpass"
 
 before_install:
   # install Neo4j locally:
   - wget dist.neo4j.org/neo4j-community-$NEO4J_VERSION-unix.tar.gz
   - tar -xzf neo4j-community-$NEO4J_VERSION-unix.tar.gz
   - neo4j-community-$NEO4J_VERSION/bin/neo4j start
+  - sh build_auth_string.sh $NEO4J_USERNAME:$NEO4J_PASSWORD
+  - neo4j-community-$NEO4J_VERSION/bin/neo4j restart
 
 install:
   # command to install dependencies
@@ -22,8 +26,6 @@ install:
   # command to install package
   - pip install .
 
-  - neo4j-admin set-initial-password mypassword
-
-  # command to run tests
+# command to run tests
 # script: nosetests
 script: synprov
