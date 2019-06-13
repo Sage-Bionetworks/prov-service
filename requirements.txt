@@ -3,7 +3,5 @@ swagger-ui-bundle == 0.0.2
 python_dateutil == 2.6.0
 setuptools >= 21.0.0
 pyhumps >= 1.2.2
-flask-graphql >= 2.0.0
-flask-mongoengine >= 0.9.5
-graphene >= 2.1.3
-graphene-mongo >= 0.2.0
+py2neo >= 2.5.0
+flask-neomodel >= 0.1
