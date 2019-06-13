@@ -12,8 +12,8 @@ env_host = os.environ.get('NEO4J_HOST')
 neo4j_host = env_host if env_host is not None else 'localhost'
 
 neomod = NeoModel(connex_app.app, variables={
-    'user': 'client',
-    'password': 'neoclient',
+    'user': 'neo4j',
+    'password': '',
     'host': neo4j_host,
     'port': 7687
 })
