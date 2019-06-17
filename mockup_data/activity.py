@@ -5,22 +5,16 @@ class Activity:
 
     actArray = ["Tool session", "Mention", "Report generation"]
 
-    def __init__(self, aName, aDesc="", aUsed=[], aGene=[], aAgent=[]):
+    def __init__(self, aName = 0, aDesc="", aUsed=[], aGene=[], aAgent=[]):
         self.id = uuid.uuid1()
-        if type(aName) is int:
-            self.name = self.actArray[aName]
-        else:
-            self.name = aName
+        self.name = self.actArray[aName]
         self.description = aDesc
         self.used = aUsed
         self.generated = aGene
         self.agents = aAgent
 
     def setName(self, param):
-        if type(param) is int:
-            self.name = self.actArray[param]
-        else:
-            self.name = param
+        self.name = self.actArray[param]
 
     def setDescription(self, param):
         self.description = param

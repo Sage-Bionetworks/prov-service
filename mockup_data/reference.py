@@ -5,22 +5,16 @@ class Reference:
 
     roles = ["data", "tool", "state", "message", "report"]
 
-    def __init__(self, aTargetVer, aRole):
+    def __init__(self, aTargetVer = 1, aRole = 0):
         self.id = uuid.uuid1()
         self.trg_id = aTargetVer
-        if type(aRole) is int:
-            self.role = self.roles[aRole]
-        else:
-            self.role = aRole
+        self.role = self.roles[aRole]
 
     def setTargetID(self, param):
         self.trg_id = param
 
     def setRole(self, param):
-        if type(param) is int:
-            self.role = self.roles[param]
-        else:
-            self.role = param
+        self.role = self.roles[param]
 
     def getRolesCount(self):
         return len(self.roles)
