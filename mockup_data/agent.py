@@ -1,9 +1,10 @@
 import uuid
 import json
+from dict import agtRoles
 
 class Agent:
 
-    roles = ["Role_1", "Role_2", "Role_3", "Role_4", "Role_5"]
+    roles = agtRoles
 
     def __init__(self, aRole = 0):
         self.id = uuid.uuid1()

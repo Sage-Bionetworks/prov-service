@@ -1,9 +1,11 @@
 import uuid
 import json
 
+from dict import refRoles
+
 class Reference:
 
-    roles = ["data", "tool", "state", "message", "report"]
+    roles = refRoles
 
     def __init__(self, aTargetVer = 1, aRole = 0):
         self.id = uuid.uuid1()

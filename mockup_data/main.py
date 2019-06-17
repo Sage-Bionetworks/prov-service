@@ -1,4 +1,5 @@
 import random as r
+import argparse
 
 from activity import *
 from agent import *
@@ -58,7 +59,19 @@ def addReference(kt):
 
     return x
 
+# read input parameters
+parser = argparse.ArgumentParser(description='Generate sample provenance records.')
+parser.add_argument('nAgents', metavar='#Agents', type=int, nargs='+', default=5, help='number of Agents')
+parser.add_argument('nReferences', metavar='#References', type=int, nargs='+', default=10, help='number of References')
+parser.add_argument('nActivities', metavar='#Activities', type=int, nargs='+', default=30, help='number of Activities')
+args = parser.parse_args()
 
+# update reference values if needed
+NUMACTIVITIES = args.nActivities[0]
+NUMAGENTS = args.nAgents[0]
+NUMREFERENCES = args.nReferences[0]
+
+# SCRIPT
 # step 1 - Create sets of entity references:
 print("Generating table of References...")
 refArray = addReference(NUMREFERENCES)

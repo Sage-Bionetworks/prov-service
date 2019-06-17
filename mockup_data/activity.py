@@ -1,9 +1,11 @@
 import uuid
 import json
 
+from dict import actNames
+
 class Activity:
 
-    actArray = ["Tool session", "Mention", "Report generation"]
+    actArray = actNames
 
     def __init__(self, aName = 0, aDesc="", aUsed=[], aGene=[], aAgent=[]):
         self.id = uuid.uuid1()
