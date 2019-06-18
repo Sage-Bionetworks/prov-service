@@ -1,24 +1,18 @@
 import uuid
 import json
-from dict import agtRoles
 
 class Agent:
 
-    roles = agtRoles
-
-    def __init__(self, aRole = 0):
+    def __init__(self, aName = ""):
         self.id = uuid.uuid1()
-        self.role = self.roles[aRole]
+        self.name = aName
 
-    def setRole(self, param):
-        self.role = self.roles[param]
-
-    def getRolesCount(self):
-        return len(self.roles)
+    def setName(self, param):
+        self.name = param
 
     def getData(self):
         x = {
-            "agent_id": str(self.id),
-            "role": self.role
+            "agtId": str(self.id),
+            "name": self.name
         }
         return json.dumps(x)

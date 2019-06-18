@@ -1,45 +1,30 @@
 import uuid
 import json
 
-from dict import actNames
+from dict import ActivityClass
 
 class Activity:
 
-    actArray = actNames
+    actArray = ActivityClass
 
-    def __init__(self, aName = 0, aDesc="", aUsed=[], aGene=[], aAgent=[]):
+    def __init__(self, aName = "", aClass = 0):
         self.id = uuid.uuid1()
-        self.name = self.actArray[aName]
-        self.description = aDesc
-        self.used = aUsed
-        self.generated = aGene
-        self.agents = aAgent
+        self.name = aName
+        self.class_ = self.actArray[aClass]
 
     def setName(self, param):
-        self.name = self.actArray[param]
+        self.name = param
 
-    def setDescription(self, param):
-        self.description = param
+    def setClass(self, param):
+        self.class_ = self.actArray[param]
 
-    def addUsed(self, param):
-        self.used.append(param)
-
-    def addGenerated(self, param):
-        self.generated.append(param)
-
-    def addAgent(self, param):
-        self.agents.append(param)
-
-    def getNameCount(self):
+    def getClassCount(self):
         return len(self.actArray)
 
     def getData(self):
         x = {
-            "activity_id": str(self.id),
+            "actId": str(self.id),
             "name": self.name,
-            "description": self.description,
-            "used": self.used,
-            "generated": self.generated,
-            "agents": self.agents
+            "class": self.class_,
         }
         return json.dumps(x)

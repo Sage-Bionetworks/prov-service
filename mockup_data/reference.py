@@ -1,30 +1,28 @@
 import uuid
 import json
 
-from dict import refRoles
-
 class Reference:
 
-    roles = refRoles
-
-    def __init__(self, aTargetVer = 1, aRole = 0):
+    def __init__(self, aTargetId = "", aTargetVer = "1", aName = ""):
         self.id = uuid.uuid1()
-        self.trg_id = aTargetVer
-        self.role = self.roles[aRole]
+        self.trg_id = aTargetId
+        self.trg_ver = aTargetVer
+        self.name = aName
 
     def setTargetID(self, param):
         self.trg_id = param
 
-    def setRole(self, param):
-        self.role = self.roles[param]
+    def setTargetVersion(self, param):
+        self.trg_ver = param
 
-    def getRolesCount(self):
-        return len(self.roles)
+    def setName(self, param):
+        self.name = param
 
     def getData(self):
         x = {
-            "target_id": str(self.id),
-            "target_version_id": self.trg_id,
-            "role": self.role
+            "refId": str(self.id),
+            "target_id": self.trg_id,
+            "target_version_id": self.trg_ver,
+            "name": self.name
         }
         return json.dumps(x)

@@ -1,9 +1,9 @@
-import random as r
 import argparse
 
 from activity import *
 from agent import *
 from reference import *
+from relationship import *
 
 # ------------------------------
 NUMAGENTS = 5
@@ -11,41 +11,18 @@ NUMREFERENCES = 10
 NUMACTIVITIES = 30
 # ------------------------------
 
-def getDataID(param, what):
-    for i in param:
-        if i.role == what:
-            return str(i.id)
-
-def addActivities(kt, agents, references):
+def addActivities(kt):
     x = []
     for i in range(kt):
-        tmp = Activity(0, "", [], [], [] )
-        tmp.setName( r.randrange(tmp.getNameCount()) )
-        tmp.setDescription( "This is description for: " + tmp.name)
-        if tmp.name == "Tool session":
-            tmp.addUsed( getDataID(references, "data") )
-            tmp.addUsed( getDataID(references, "tool") )
-            tmp.addGenerated( getDataID(references, "state") )
-        elif tmp.name == "Mention":
-            tmp.addUsed( getDataID(references, "data") )
-            tmp.addUsed( getDataID(references, "tool") )
-            tmp.addUsed( getDataID(references, "state") )
-            # tmp.addUsed(references, "message")
-            tmp.addUsed( getDataID(references, "report") )
-            tmp.addGenerated( getDataID(references, "message") )
-        else:
-            tmp.addUsed( getDataID(references, "state") )
-            tmp.addUsed( getDataID(references, "message") )
-            tmp.addGenerated( getDataID(references, "report") )
-        tmp.addAgent( str(agents[r.randrange(NUMAGENTS)].id) )
+        tmp = Activity("Activity_" + str(i+1), 0)
+        tmp.setClass( r.randrange(tmp.getClassCount()) )
         x.append( tmp )
     return x
 
 def addAgents(kt):
     x = []
     for i in range(kt):
-        tmp = Agent(0)
-        tmp.setRole( r.randrange(tmp.getRolesCount()) )
+        tmp = Agent("User_" + str(i+1) )
         x.append( tmp )
 
     return x
@@ -53,8 +30,17 @@ def addAgents(kt):
 def addReference(kt):
     x = []
     for i in range(kt):
-        tmp = Reference(1, 0)
-        tmp.setRole( r.randrange(tmp.getRolesCount()) )
+        tmp = Reference("TargetID_" + str(i+1), "1.0", "Reference_" + str(i+1) )
+        x.append( tmp )
+
+    return x
+
+def addRelationship(firstArr, secondArr, kt):
+# Header: ACTIVITY_ID | roles:string[] | AGENT_ID | TYPE
+    x = []
+    for i in range( len(firstArr) ):
+        dl = r.randrange(len(secondArr))
+        tmp = Relationship(firstArr[i].id, secondArr[dl].id, kt)
         x.append( tmp )
 
     return x
@@ -77,18 +63,46 @@ print("Generating table of References...")
 refArray = addReference(NUMREFERENCES)
 for i in refArray:
     print( i.getData() )
-print(".")
+print(" ")
 
 # step 2 - Create agent/user pool:
 print("Generating table of Agents...")
 agtArray = addAgents(NUMAGENTS)
 for i in agtArray:
     print( i.getData() )
-print(".")
+print(" ")
 
 # step 3 - Create activities:
 print("Generating table of Activities...")
-actArray = addActivities(NUMACTIVITIES, agtArray, refArray)
+actArray = addActivities(NUMACTIVITIES)
 for i in actArray:
     print( i.getData() )
-print(".")
+print(" ")
+
+# step 4 - create Activity -> :WASASSOCIATEDWITH -> Agent
+print("Generating :ASSOCIATED records")
+assArray = addRelationship(actArray, agtArray, 0)
+for i in assArray:
+    print( i.getData() )
+print(" ")
+
+# step 5 - create Reference -> :WASGENERATEDBY -> Activity
+print("Generating :GENERATEDBY records")
+assArray = addRelationship(refArray, actArray, 1)
+for i in assArray:
+    print( i.getData() )
+print(" ")
+
+# step 6 - create Activity-> :USED -> Reference
+print("Generating :USED records")
+assArray = addRelationship(actArray, refArray, 2)
+for i in assArray:
+    print( i.getData() )
+print(" ")
+
+# step 7 - create Reference -> :ATTRIBUTEDTO -> Agent
+print("Generating :ATTRIBUTEDTO records")
+assArray = addRelationship(refArray, agtArray, 3)
+for i in assArray:
+    print( i.getData() )
+print(" ")
