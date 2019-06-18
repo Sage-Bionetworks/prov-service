@@ -26,5 +26,6 @@ class Activity:
             "actId": str(self.id),
             "name": self.name,
             "class": self.class_,
+            ":LABEL": "Activity"
         }
         return json.dumps(x)

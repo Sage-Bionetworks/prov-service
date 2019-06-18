@@ -13,6 +13,7 @@ class Agent:
     def getData(self):
         x = {
             "agtId": str(self.id),
-            "name": self.name
+            "name": self.name,
+            ":LABEL": "Agent"
         }
         return json.dumps(x)

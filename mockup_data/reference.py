@@ -23,6 +23,7 @@ class Reference:
             "refId": str(self.id),
             "target_id": self.trg_id,
             "target_version_id": self.trg_ver,
-            "name": self.name
+            "name": self.name,
+            ":LABEL": "Reference"
         }
         return json.dumps(x)

@@ -96,27 +96,27 @@ RelationTypes = ["WASASSOCIATEDWITH", "WASGENERATEDBY", "USED", "WASATTRIBUTEDTO
 ```
 # Agent Records
 ...
-{"agtId": "1cba2d84-91b9-11e9-8943-48a4726d43f3", "name": "User_1"}
-{"agtId": "1cba2d85-91b9-11e9-aed5-48a4726d43f3", "name": "User_2"}
-{"agtId": "1cba2d86-91b9-11e9-829c-48a4726d43f3", "name": "User_3"}
+{"agtId": "1cba2d84-91b9-11e9-8943-48a4726d43f3", "name": "User_1", ":LABEL": "Agent"}
+{"agtId": "1cba2d85-91b9-11e9-aed5-48a4726d43f3", "name": "User_2", ":LABEL": "Agent"}
+{"agtId": "1cba2d86-91b9-11e9-829c-48a4726d43f3", "name": "User_3", ":LABEL": "Agent"}
 ...
 ```
 
 ```
 # Reference Records
 ...
-{"refId": "1cb9df36-91b9-11e9-91b2-48a4726d43f3", "target_id": "TargetID_1", "target_version_id": "1.0", "name": "Reference_1"}
-{"refId": "1cb9df37-91b9-11e9-bf04-48a4726d43f3", "target_id": "TargetID_2", "target_version_id": "1.0", "name": "Reference_2"}
-{"refId": "1cb9df38-91b9-11e9-b156-48a4726d43f3", "target_id": "TargetID_3", "target_version_id": "1.0", "name": "Reference_3"}
+{"refId": "1cb9df36-91b9-11e9-91b2-48a4726d43f3", "target_id": "TargetID_1", "target_version_id": "1.0", "name": "Reference_1", ":LABEL": "Reference"}
+{"refId": "1cb9df37-91b9-11e9-bf04-48a4726d43f3", "target_id": "TargetID_2", "target_version_id": "1.0", "name": "Reference_2", ":LABEL": "Reference"}
+{"refId": "1cb9df38-91b9-11e9-b156-48a4726d43f3", "target_id": "TargetID_3", "target_version_id": "1.0", "name": "Reference_3", ":LABEL": "Reference"}
 ...
 ```
 
 ```
 # Activity Records
 ...
-{"actId": "1cba2d89-91b9-11e9-820f-48a4726d43f3", "name": "Activity_1", "class": "Tool session"}
-{"actId": "1cba2d8a-91b9-11e9-9c12-48a4726d43f3", "name": "Activity_2", "class": "Report generation"}
-{"actId": "1cba2d8b-91b9-11e9-9bf2-48a4726d43f3", "name": "Activity_3", "class": "Mention"}
+{"actId": "1cba2d89-91b9-11e9-820f-48a4726d43f3", "name": "Activity_1", "class": "Tool session", ":LABEL": "Activity"}
+{"actId": "1cba2d8a-91b9-11e9-9c12-48a4726d43f3", "name": "Activity_2", "class": "Report generation", ":LABEL": "Activity"}
+{"actId": "1cba2d8b-91b9-11e9-9bf2-48a4726d43f3", "name": "Activity_3", "class": "Mention", ":LABEL": "Activity"}
 ...
 ```
 
