@@ -3,6 +3,7 @@ import json
 import re
 
 from functools import wraps
+from hashlib import sha256
 
 
 def _convert_keys(obj):
@@ -26,4 +27,8 @@ def _convert_keys(obj):
                 for k in obj}
     else:
         return obj
+
+
+def create_hash(values):
+    return sha256(bytes(''.join(values), 'utf8')).hexdigest()
 

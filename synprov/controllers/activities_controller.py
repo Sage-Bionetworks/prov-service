@@ -1,13 +1,15 @@
 import connexion
 import six
 import uuid
+import humps
 
-from mongoengine.errors import NotUniqueError
+from py2neo import Graph, Node, NodeMatcher
 
-from synprov.models import Activity  # noqa: E501
-from synprov.models import Agent  # noqa: E501
-from synprov.models import Reference  # noqa: E501
-from synprov.config import mongo
+from synprov.config import neomod
+from synprov.graphmodels import Activity, Reference, Agent
+
+
+graph = Graph(neomod.neo.db.url)
 
 
 def create_activity(body):  # noqa: E501
@@ -15,34 +17,15 @@ def create_activity(body):  # noqa: E501
 
     Create a new Activity. If the passed Activity object contains a Used array, you must set the concreteType field of each Used subclass. # noqa: E501
 
-    :param body: 
+    :param body:
     :type body: dict | bytes
 
     :rtype: Activity
     """
-    for u in body['used']:
-        try:
-            Reference(**u).save()
-        except NotUniqueError:
-            continue
+    act = Activity(**humps.decamelize(body))
+    act.save()
 
-    for generated in body['generated']:
-        try:
-            Reference(**generated).save()
-        except NotUniqueError:
-            continue
-
-    for a in body['agents']:
-        try:
-            Agent(**a).save()
-        except NotUniqueError:
-            continue
-    
-    activity = Activity(**body)
-    activity.activity_id = uuid.uuid4().hex
-    activity.save()
-
-    return activity
+    return act.node
 
 
 def delete_activity(id):  # noqa: E501
@@ -55,7 +38,7 @@ def delete_activity(id):  # noqa: E501
 
     :rtype: file
     """
-    return 'do some magic!'
+    return 'Not Implemented', 501
 
 
 def get_activity(id):  # noqa: E501
@@ -68,8 +51,10 @@ def get_activity(id):  # noqa: E501
 
     :rtype: Activity
     """
-    print(type(Activity.objects.get(activity_id=id)))
-    return Activity.objects.get(activity_id=id)
+    matcher = NodeMatcher(graph)
+    activity = matcher.match('Activity',
+                             activity_id={id}).first()
+    return activity
 
 
 def get_activity_used(id):  # noqa: E501
@@ -82,8 +67,14 @@ def get_activity_used(id):  # noqa: E501
 
     :rtype: List[Reference]
     """
-    activity = Activity.objects.get(activity_id=id)
-    return activity.used
+    used = graph.run(
+        '''
+        MATCH (refs)<-[:USED]-(a:Activity {activity_id: {a_id}})
+        RETURN refs
+        ''',
+        a_id=id
+    )
+    return [r['refs'] for r in used.data()]
 
 
 def get_activity_generated(id):  # noqa: E501
@@ -96,8 +87,14 @@ def get_activity_generated(id):  # noqa: E501
 
     :rtype: List[Reference]
     """
-    activity = Activity.objects.get(activity_id=id)
-    return activity.generated
+    generated = graph.run(
+        '''
+        MATCH (refs)-[:WASGENERATEDBY]->(a:Activity {activity_id: {a_id}})
+        RETURN refs
+        ''',
+        a_id=id
+    )
+    return [r['refs'] for r in generated.data()]
 
 
 def get_activity_agents(id):  # noqa: E501
@@ -108,10 +105,16 @@ def get_activity_agents(id):  # noqa: E501
     :param id: The ID of the activity to fetch.
     :type id: str
 
-    :rtype: List[Reference]
+    :rtype: List[Agent]
     """
-    activity = Activity.objects.get(activity_id=id)
-    return activity.agents
+    agents = graph.run(
+        '''
+        MATCH (agts)<-[:WASASSOCIATEDWITH]->(a:Activity {activity_id: {a_id}})
+        RETURN agts
+        ''',
+        a_id=id
+    )
+    return [r['agts'] for r in agents.data()]
 
 
 def list_activities():  # noqa: E501
@@ -122,7 +125,7 @@ def list_activities():  # noqa: E501
 
     :rtype: List[Activity]
     """
-    return Activity.objects()
+    return 'Not Implemented', 501
 
 
 def update_activity(id, body=None):  # noqa: E501
@@ -137,4 +140,4 @@ def update_activity(id, body=None):  # noqa: E501
 
     :rtype: Activity
     """
-    return 'do some magic!'
+    return 'Not Implemented', 501

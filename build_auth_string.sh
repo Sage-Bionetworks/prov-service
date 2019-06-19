@@ -36,7 +36,7 @@ HEX_SALT=$(echo -n $SALT | sed -r 's/(.{2})/\\x\1/g')
 # calculate the sha256 sum of the salt and password value
 # need to split the output because the output ends with a hyphen
 IFS=' '
-read -a PASSWORD_HASH_ARRAY <<< $(printf $HEX_SALT$HEX_PASS | sha256sum)
+read -a PASSWORD_HASH_ARRAY <<< $(printf $HEX_SALT$HEX_PASS | shasum -a 256)
 PASSWORD_HASH="${PASSWORD_HASH_ARRAY[0]}"
 
 # echo "$UNAME;$PASS;$SALT"

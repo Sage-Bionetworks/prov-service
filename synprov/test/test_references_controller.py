@@ -1,18 +1,18 @@
-# coding: utf-8
+# # coding: utf-8
 
-from __future__ import absolute_import
-import unittest
+# from __future__ import absolute_import
+# import unittest
 
-from flask import json
-from six import BytesIO
+# from flask import json
+# from six import BytesIO
 
-from synprov.models import Reference  # noqa: E501
-from synprov.test import BaseTestCase
-
-
-class TestReferencesController(BaseTestCase):
-    """ReferencesController integration test stubs"""
+# from synprov.models import Reference  # noqa: E501
+# from synprov.test import BaseTestCase
 
 
-if __name__ == '__main__':
-    unittest.main()
+# class TestReferencesController(BaseTestCase):
+#     """ReferencesController integration test stubs"""
+
+
+# if __name__ == '__main__':
+#     unittest.main()

@@ -1,15 +1,30 @@
 # ref: https://docs.travis-ci.com/user/languages/python
 language: python
+
 python:
   - "3.5"
   - "3.6"
-install: 
+
+env:
+  - NEO4J_VERSION="3.4.1" NEO4J_USERNAME="neo4j_test" NEO4J_PASSWORD="testpass"
+
+before_install:
+  # install Neo4j locally:
+  - wget dist.neo4j.org/neo4j-community-$NEO4J_VERSION-unix.tar.gz
+  - tar -xzf neo4j-community-$NEO4J_VERSION-unix.tar.gz
+  - bash build_auth_string.sh $NEO4J_USERNAME:$NEO4J_PASSWORD > auth
+  - mkdir -p neo4j-community-$NEO4J_VERSION/data/dbms
+  - cp auth neo4j-community-$NEO4J_VERSION/data/dbms/
+  - neo4j-community-$NEO4J_VERSION/bin/neo4j start
+
+install:
   # command to install dependencies
-  - "pip install -r requirements.txt"
+  - pip install -r requirements.txt
   # command to install test dependencies
-  - "pip install -r test-requirements.txt"
+  - pip install -r test-requirements.txt
   # command to install package
-  - "pip install ."
+  - pip install .
+
 # command to run tests
-# script: nosetests
-script: synprov
+script:
+  - pytest

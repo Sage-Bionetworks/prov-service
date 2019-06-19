@@ -1,8 +1,15 @@
 import connexion
 import six
+import uuid
+import humps
 
-from synprov.models import Agent  # noqa: E501
-from synprov import util
+from py2neo import Graph, Node, NodeMatcher
+
+from synprov.config import neomod
+from synprov.graphmodels import Activity, Reference, Agent
+
+
+graph = Graph(neomod.neo.db.url)
 
 
 def get_agent(id):  # noqa: E501
