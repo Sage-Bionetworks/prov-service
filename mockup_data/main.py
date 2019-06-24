@@ -1,9 +1,11 @@
 import argparse
+from py2neo import Graph, Node
 
 from activity import *
 from agent import *
 from reference import *
 from relationship import *
+from graphdatabase import *
 
 # ------------------------------
 NUMAGENTS = 5
@@ -57,11 +59,14 @@ NUMACTIVITIES = args.nActivities[0]
 NUMAGENTS = args.nAgents[0]
 NUMREFERENCES = args.nReferences[0]
 
+gdb = GraphDataBase( Graph(password = "neo4jj") )
+
 # SCRIPT
 # step 1 - Create sets of entity references:
 print("Generating table of References...")
 refArray = addReference(NUMREFERENCES)
 for i in refArray:
+    gdb.createReferenceNode( i )
     print( i.getData() )
 print(" ")
 
@@ -69,6 +74,7 @@ print(" ")
 print("Generating table of Agents...")
 agtArray = addAgents(NUMAGENTS)
 for i in agtArray:
+    gdb.createAgentNode( i )
     print( i.getData() )
 print(" ")
 
@@ -76,6 +82,7 @@ print(" ")
 print("Generating table of Activities...")
 actArray = addActivities(NUMACTIVITIES)
 for i in actArray:
+    gdb.createActivityNode( i )
     print( i.getData() )
 print(" ")
 
@@ -83,6 +90,7 @@ print(" ")
 print("Generating :ASSOCIATED records")
 assArray = addRelationship(actArray, agtArray, 0)
 for i in assArray:
+    gdb.createRelationshipAssociated( i )
     print( i.getData() )
 print(" ")
 
@@ -90,6 +98,7 @@ print(" ")
 print("Generating :GENERATEDBY records")
 assArray = addRelationship(refArray, actArray, 1)
 for i in assArray:
+    gdb.createRelationshipGenerated( i )
     print( i.getData() )
 print(" ")
 
@@ -97,6 +106,7 @@ print(" ")
 print("Generating :USED records")
 assArray = addRelationship(actArray, refArray, 2)
 for i in assArray:
+    gdb.createRelationshipUsed( i )
     print( i.getData() )
 print(" ")
 
@@ -104,5 +114,6 @@ print(" ")
 print("Generating :ATTRIBUTEDTO records")
 assArray = addRelationship(refArray, agtArray, 3)
 for i in assArray:
+    gdb.createRelationshipAttributed( i )
     print( i.getData() )
 print(" ")
