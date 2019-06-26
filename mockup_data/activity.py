@@ -1,7 +1,7 @@
 import uuid
 import json
 
-from dict import ActivityClass
+from mockup_data.dict import ActivityClass
 
 class Activity:
 
