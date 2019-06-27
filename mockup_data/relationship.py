@@ -1,7 +1,7 @@
 import json
 import random as r
 
-from dict import *
+from mockup_data.dict import *
 
 class Relationship:
 
