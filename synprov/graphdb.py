@@ -1,11 +1,11 @@
 
 from synprov.config import neomod
 
-from mockup_data.activity import *
-from mockup_data.agent import *
-from mockup_data.reference import *
-from mockup_data.relationship import *
-from mockup_data.graphdatabase import *
+from synprov.mockup_data.activity import Activity
+from synprov.mockup_data.agent import Agent
+from synprov.mockup_data.reference import Reference
+from synprov.mockup_data.relationship import Relationship
+from synprov.mockup_data.graphdatabase import GraphDataBase
 
 def addActivities(kt):
     x = []
@@ -42,7 +42,7 @@ def addRelationship(firstArr, secondArr, kt):
 # LOADING SCRIPT
 # --------------------------------------------------------------
 def init_db(numAgents=5, numActivities=30, numReferences=10):
-    
+
     gdb = GraphDataBase( Graph(neomod.neo.db.url) )
 
     # step 1 - Create sets of entity references:

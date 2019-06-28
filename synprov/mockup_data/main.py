@@ -1,11 +1,11 @@
 import argparse
 from py2neo import Graph, Node
 
-from activity import *
-from agent import *
-from reference import *
-from relationship import *
-from graphdatabase import *
+from activity import Activity
+from agent import Agent
+from reference import Reference
+from relationship import Relationship
+from graphdatabase import GraphDataBase
 
 # ------------------------------
 NUMAGENTS = 5
