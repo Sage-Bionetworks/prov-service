@@ -12,7 +12,7 @@ before_install:
   # install Neo4j locally:
   - wget dist.neo4j.org/neo4j-community-$NEO4J_VERSION-unix.tar.gz
   - tar -xzf neo4j-community-$NEO4J_VERSION-unix.tar.gz
-  - bash build_auth_string.sh $NEO4J_USERNAME:$NEO4J_PASSWORD > auth
+  - bash .build/build_auth_string.sh $NEO4J_USERNAME:$NEO4J_PASSWORD > auth
   - mkdir -p neo4j-community-$NEO4J_VERSION/data/dbms
   - cp auth neo4j-community-$NEO4J_VERSION/data/dbms/
   - neo4j-community-$NEO4J_VERSION/bin/neo4j start
