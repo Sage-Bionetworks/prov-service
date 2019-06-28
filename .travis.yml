@@ -27,3 +27,6 @@ install:
 # command to run tests
 script:
   - pytest --cov-config=.coveragerc --cov=synprov
+
+after_success:
+  - coveralls
