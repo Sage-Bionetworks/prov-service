@@ -1,7 +1,11 @@
 import json
 import random as r
 
-from mockup_data.dict import *
+from synprov.mockup_data.dict import (AgentRoles,
+                                      ReferenceRoles,
+                                      ActivityClass,
+                                      RelationTypes)
+
 
 class Relationship:
 

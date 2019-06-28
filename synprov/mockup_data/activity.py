@@ -1,7 +1,7 @@
 import uuid
 import json
 
-from mockup_data.dict import ActivityClass
+from synprov.mockup_data.dict import ActivityClass
 
 class Activity:
 
