@@ -40,6 +40,8 @@ If you have the **Neo4j Desktop** application installed, you should be able to v
 MATCH (n) RETURN n
 ```
 
+![example provenance graph](img/mockprov.png)
+
 
 ### Swagger UI
 
@@ -48,6 +50,9 @@ You can also interact with the graph database through RESTful API queries. The s
 ```
 http://localhost:8080/rest/ui/
 ```
+
+![provenance swagger ui](img/swaggerui.png)
+
 
 The OpenAPI definition lives here:
 
