@@ -1,36 +1,27 @@
 openapi: 3.0.1
 info:
-  description: <h1>Synapse Repository Services</h1><p>Sage Bionetworks Platform</p>
   title: Provenance Service
-  version: 0.1.0
+  description: |
+    This service provides a lightweight implementation of the [Synapse Activity services](https://docs.synapse.org/rest/#org.sagebionetworks.repo.web.controller.ActivityController), based on the [W3C PROV](https://www.w3.org/TR/prov-primer/) spec. It is designed to be mostly agnostic to the underlying data model or schema of any particular system, and thus relatively flexible for use by different clients.
+  version: 0.2.0
 servers:
 - url: /rest/v1
 tags:
-- description: "."
+- description: |
+    \"An `Activity` is something that occurs over a period of time and acts upon or with entities; it may include consuming, processing, transforming, modifying, relocating, using, or generating entities.\" — [W3C](https://www.w3.org/TR/2013/REC-prov-dm-20130430/#section-entity-activity)
   name: Activities
-- description: "."
+- description: |
+    \"An entity is a physical, digital, conceptual, or other kind of thing with some fixed aspects; entities may be real or imaginary.\" — [W3C](https://www.w3.org/TR/2013/REC-prov-dm-20130430/#section-entity-activity)
+
+    A `Reference` is a record describing both the ID and *version* of an entity in some repository.
   name: References
-- description: "."
+- description: |
+    \"An `Agent` is something that bears some form of responsibility for an activity taking place, for the existence of an entity, or for another agent's activity.\" — [W3C](https://www.w3.org/TR/2013/REC-prov-dm-20130430/#section-agents-attribution-association-delegation)
   name: Agents
 paths:
   /activities:
-    get:
-      description: List Activities
-      operationId: list_activities
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/Activity'
-                type: array
-          description: "."
-      summary: "."
-      tags:
-      - Activities
-      x-openapi-router-controller: synprov.controllers.activities_controller
     post:
+      summary: Create a new activity
       description: |-
         Create a new Activity. If the passed Activity object contains a Used
         array, you must set the concreteType field of each Used subclass.
@@ -39,7 +30,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Activity'
+              $ref: '#/components/schemas/ActivityForm'
         required: true
       responses:
         201:
@@ -47,261 +38,142 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Activity'
-          description: "."
-      summary: Create a new.
+          description: Success — activity created
       tags:
       - Activities
       x-codegen-request-body-name: body
       x-openapi-router-controller: synprov.controllers.activities_controller
-  /activities/{id}:
-    delete:
-      description: Delete an Activity
-      operationId: delete_activity
-      parameters:
-      - description: The id of activity to delete.
-        explode: false
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        204:
-          content:
-            application/json:
-              schema:
-                format: binary
-                type: string
-          description: "."
-      summary: Delete an.
-      tags:
-      - Activities
-      x-codegen-request-body-name: body
-      x-openapi-router-controller: synprov.controllers.activities_controller
+  /activities/graph:
     get:
-      description: Get an existing Activity
-      operationId: get_activity
+      summary: Get provenance graph
+      description: >
+        Retrieve the nodes and relationships in a neighborhood around entity a specified user.
+      operationId: get_activities_graph
       parameters:
-      - description: The ID of the activity to fetch.
-        explode: false
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-        style: simple
+        - name: maxNodes
+          in: query
+          description: maximum number of nodes to return
+          schema:
+            type: integer
+            format: int32
       responses:
         200:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Activity'
-          description: "."
-      summary: Get an existing.
+                $ref: '#/components/schemas/Graph'
+          description: OK
       tags:
       - Activities
-      x-codegen-request-body-name: body
-      x-openapi-router-controller: synprov.controllers.activities_controller
-    put:
-      description: Update an Activity
-      operationId: update_activity
-      parameters:
-      - description: The id of the activity to update.
-        explode: false
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Activity'
-        description: Update an Activity
-        required: false
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Activity'
-          description: "."
-      summary: Update an.
-      tags:
-      - Activities
-      x-codegen-request-body-name: body
-      x-openapi-router-controller: synprov.controllers.activities_controller
-  /activities/{id}/used:
+      x-openapi-router-controller: synprov.controllers.agents_controller
+  /agents/{id}/subgraph:
     get:
-      description: Get entities used by an existing Activity
-      operationId: get_activity_used
+      summary: Get subgraph connected to an agent
+      description: >
+        Retrieve the nodes and relationships in a neighborhood around a specified user.
+      operationId: get_agent_subgraph
       parameters:
-      - description: The ID of the activity to fetch.
-        explode: false
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-        style: simple
+        - name: id
+          in: path
+          description: user ID
+          required: true
+          schema:
+            type: string
+        - name: maxNodes
+          in: query
+          description: maximum number of nodes to return
+          schema:
+            type: integer
+            format: int32
       responses:
         200:
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/Reference'
-                type: array
-          description: "."
-      summary: Get used by an existing.
-      tags:
-      - Activities
-      x-codegen-request-body-name: body
-      x-openapi-router-controller: synprov.controllers.activities_controller
-  /activities/{id}/generated:
-    get:
-      description: Get entities generated by an existing Activity
-      operationId: get_activity_generated
-      parameters:
-      - description: The ID of the activity to fetch.
-        explode: false
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/Reference'
-                type: array
-          description: "."
-      summary: Get generated by an existing.
-      tags:
-      - Activities
-      x-codegen-request-body-name: body
-      x-openapi-router-controller: synprov.controllers.activities_controller
-  /activities/{id}/agents:
-    get:
-      description: Get agents associated with an existing Activity
-      operationId: get_activity_agents
-      parameters:
-      - description: The ID of the activity to fetch.
-        explode: false
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/Agent'
-                type: array
-          description: "."
-      summary: Get agents for an existing.
-      tags:
-      - Activities
-      x-codegen-request-body-name: body
-      x-openapi-router-controller: synprov.controllers.activities_controller
-  /agents:
-    get:
-      description: List Agents
-      operationId: list_agents
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/Agent'
-                type: array
-          description: "."
-      summary: "."
+                $ref: '#/components/schemas/Graph'
+          description: OK
       tags:
       - Agents
       x-openapi-router-controller: synprov.controllers.agents_controller
-  /agents/{id}:
+  /references/{id}/subgraph:
     get:
-      description: Get an existing Agent
-      operationId: get_agent
+      summary: Get subgraph connected to an entity
+      description: >
+        Retrieve the nodes and relationships in a neighborhood around a specified entity.
+      operationId: get_reference_subgraph
       parameters:
-      - description: The ID of the agent to fetch.
-        explode: false
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-        style: simple
+        - name: id
+          in: path
+          description: entity ID
+          required: true
+          schema:
+            type: string
+        - name: maxNodes
+          in: query
+          description: maximum number of nodes to return
+          schema:
+            type: integer
+            format: int32
+        - name: direction
+          in: query
+          description: direction in which to collect nodes
+          schema:
+            type: string
+            enum:
+              - up
+              - down
+              - both
       responses:
         200:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Agent'
-          description: "."
-      summary: Get an existing.
-      tags:
-      - Agents
-      x-codegen-request-body-name: body
-      x-openapi-router-controller: synprov.controllers.agents_controller
-  /references:
-    get:
-      description: List References
-      operationId: list_references
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/Reference'
-                type: array
-          description: "."
-      summary: "."
+                $ref: '#/components/schemas/Graph'
+          description: OK
       tags:
       - References
       x-openapi-router-controller: synprov.controllers.references_controller
-  /references/{id}:
-    get:
-      description: Get an existing Reference
-      operationId: get_reference
-      parameters:
-      - description: The ID of the entity to fetch.
-        explode: false
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Reference'
-          description: "."
-      summary: Get an existing.
-      tags:
-      - References
-      x-codegen-request-body-name: body
-      x-openapi-router-controller: synprov.controllers.references_controller
+
 components:
   schemas:
     Activity:
+      example:
+        id: activityId
+        name: name
+        description: agent1 generates entity2 from entity1
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        class:
+          type: string
+      title: Activity
+      type: object
+    Reference:
+      example:
+        targetId: entityId
+        targetVersionId: "1"
+      properties:
+        targetVersionId:
+          type: string
+        targetId:
+          type: string
+      title: Reference
+      type: object
+    Agent:
+      example:
+        id: agentId
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      title: Agent
+      type: object
+    ActivityForm:
       example:
         generated:
         - role: role
@@ -336,31 +208,8 @@ components:
           type: string
         description:
           type: string
-      title: Activity
+      title: ActivityForm
       type: object
-    Reference:
-      example:
-        role: role
-        targetId: entityId
-        targetVersionId: 1
-      properties:
-        targetVersionId:
-          format: int32
-          type: integer
-        targetId:
-          type: string
-        role:
-          type: string
-      title: Reference
-      type: object
-    Agent:
-      example:
-        agentId: agentId
-        role: role
-      properties:
-        agentId:
-          type: string
-        role:
-          type: string
-      title: Agent
+    Graph:
+      title: Graph
       type: object
