@@ -65,7 +65,7 @@ paths:
           description: OK
       tags:
       - Activities
-      x-openapi-router-controller: synprov.controllers.agents_controller
+      x-openapi-router-controller: synprov.controllers.activities_controller
   /agents/{id}/subgraph:
     get:
       summary: Get subgraph connected to an agent
