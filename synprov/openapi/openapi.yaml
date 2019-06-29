@@ -47,7 +47,7 @@ paths:
     get:
       summary: Get provenance graph
       description: >
-        Retrieve the nodes and relationships in a neighborhood around entity a specified user.
+        Retrieve all nodes and relationships in the graph that pass filters.
       operationId: get_activities_graph
       parameters:
         - name: maxNodes
@@ -61,7 +61,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Graph'
+                $ref: '#/components/schemas/D3Graph'
           description: OK
       tags:
       - Activities
@@ -90,7 +90,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Graph'
+                $ref: '#/components/schemas/D3Graph'
           description: OK
       tags:
       - Agents
@@ -128,7 +128,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Graph'
+                $ref: '#/components/schemas/D3Graph'
           description: OK
       tags:
       - References
@@ -208,8 +208,53 @@ components:
           type: string
         description:
           type: string
+        class:
+          type: string
       title: ActivityForm
       type: object
-    Graph:
-      title: Graph
+    D3Graph:
+      title: D3Graph
       type: object
+      properties:
+        nodes:
+          items:
+            $ref: '#components/schemas/Node'
+          type: array
+        relationships:
+          items:
+            $ref: '#components/schemas/Relationship'
+          type: array
+    Node:
+      title: Node
+      type: object
+      properties:
+        id:
+          type: string
+        labels:
+          items:
+            type: string
+          type: array
+        properties:
+          type: object
+    Relationship:
+      title: Relationship
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        startNode:
+          type: string
+        endNode:
+          type: string
+        properties:
+          type: object
+        source:
+          type: string
+        target:
+          type: string
+        linknum:
+          type: integer
+          format: int32
+
