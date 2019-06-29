@@ -257,4 +257,3 @@ components:
         linknum:
           type: integer
           format: int32
-
