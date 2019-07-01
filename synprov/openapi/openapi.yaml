@@ -50,12 +50,7 @@ paths:
         Retrieve all nodes and relationships in the graph that pass filters.
       operationId: get_activities_graph
       parameters:
-        - name: maxNodes
-          in: query
-          description: maximum number of nodes to return
-          schema:
-            type: integer
-            format: int32
+        - $ref: '#/components/parameters/limitParam'
       responses:
         200:
           content:
@@ -79,12 +74,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: maxNodes
-          in: query
-          description: maximum number of nodes to return
-          schema:
-            type: integer
-            format: int32
+        - $ref: '#/components/parameters/limitParam'
       responses:
         200:
           content:
@@ -108,21 +98,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: maxNodes
-          in: query
-          description: maximum number of nodes to return
-          schema:
-            type: integer
-            format: int32
-        - name: direction
-          in: query
-          description: direction in which to collect nodes
-          schema:
-            type: string
-            enum:
-              - up
-              - down
-              - both
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/directionParam'
+
       responses:
         200:
           content:
@@ -136,44 +114,66 @@ paths:
 
 components:
   schemas:
-    Activity:
-      example:
-        id: activityId
-        name: name
-        description: agent1 generates entity2 from entity1
+    ProvLabel:
+      type: object
+      required:
+        - name
       properties:
         id:
           type: string
+          format: uuid
         name:
           type: string
         description:
           type: string
-        class:
+        createdAt:
           type: string
-      title: Activity
-      type: object
+          format: date
+        createdBy:
+          type: string
+    Activity:
+      allOf:
+        - $ref: '#/components/schemas/ProvLabel'
+        - title: Activity
+          type: object
+          example:
+            id: activityId
+            name: name
+            description: agent1 generates entity2 from entity1
+          properties:
+            class:
+              type: string
     Reference:
-      example:
-        targetId: entityId
-        targetVersionId: "1"
-      properties:
-        targetVersionId:
-          type: string
-        targetId:
-          type: string
-      title: Reference
-      type: object
+      allOf:
+        - $ref: '#/components/schemas/ProvLabel'
+        - title: Reference
+          type: object
+          example:
+            targetId: entityId
+            targetVersionId: "1"
+          required:
+            - targetId
+            - targetVersionId
+          properties:
+            targetVersionId:
+              type: string
+            targetId:
+              type: string
     Agent:
-      example:
-        id: agentId
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-      title: Agent
-      type: object
+      allOf:
+        - $ref: '#/components/schemas/ProvLabel'
+        - title: Agent
+          type: object
+          example:
+            id: agentId
+          required:
+            - userId
+          properties:
+            userId:
+              type: string
     ActivityForm:
+      title: ActivityForm
+      type: object
       example:
         generated:
         - role: role
@@ -190,8 +190,6 @@ components:
         - agentId: agent1
           role: role
       properties:
-        id:
-          type: string
         used:
           items:
             $ref: '#/components/schemas/Reference'
@@ -210,8 +208,6 @@ components:
           type: string
         class:
           type: string
-      title: ActivityForm
-      type: object
     D3Graph:
       title: D3Graph
       type: object
@@ -257,3 +253,29 @@ components:
         linknum:
           type: integer
           format: int32
+  parameters:
+    limitParam:
+      name: limit
+      in: query
+      description: maximum number of nodes to return
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
+        default: 20
+    directionParam:
+      name: direction
+      in: query
+      description: direction in which to collect nodes
+      schema:
+        type: string
+        enum:
+          - up
+          - down
+          - both
+
+  responses:
+    404NotFound:
+      description: The specified resource was not found.
