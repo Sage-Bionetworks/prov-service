@@ -40,7 +40,7 @@ def neo4j_to_d3(results):
         nodes.append(_convert_node(record['source']))
         nodes.append(_convert_node(record['target']))
         rels.append(_convert_relationship(record['relationship']))
-    return json.dumps({"nodes": nodes, "links": rels})
+    return {"nodes": nodes, "links": rels}
 
 
 def _convert_node(neo4j_node):
