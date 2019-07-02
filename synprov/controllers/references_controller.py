@@ -12,25 +12,14 @@ from synprov.graphmodels import Activity, Reference, Agent
 graph = Graph(neomod.neo.db.url)
 
 
-def get_reference(id):  # noqa: E501
-    """Get an existing.
+def get_reference_subgraph(id):  # noqa: E501
+    """Get subgraph connected to an entity.
 
-    Get an existing Reference # noqa: E501
+    Retrieve the nodes and relationships in a neighborhood around a specified entity. # noqa: E501
 
     :param id: The ID of the entity to fetch.
     :type id: str
 
-    :rtype: Reference
+    :rtype: Graph
     """
-    return 'do some magic!'
-
-
-def list_references():  # noqa: E501
-    """.
-
-    List References # noqa: E501
-
-
-    :rtype: List[Reference]
-    """
-    return 'do some magic!'
+    return 'Not Implemented', 501
