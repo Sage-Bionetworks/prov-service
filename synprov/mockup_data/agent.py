@@ -1,19 +1,18 @@
 import uuid
 import json
 
-class Agent:
+from synprov.models.agent import Agent
 
-    def __init__(self, aName = ""):
+
+class MockAgent(Agent):
+
+    def __init__(self, name='', user_id=''):
+        super().__init__(name=name, user_id=user_id)
         self.id = uuid.uuid1()
-        self.name = aName
+        self.label = 'Agent'
+        self.openapi_types.update({'label': str})
 
-    def setName(self, param):
-        self.name = param
-
-    def getData(self):
-        x = {
-            "agtId": str(self.id),
-            "name": self.name,
-            ":LABEL": "Agent"
-        }
-        return json.dumps(x)
+    def get_data(self):
+        x = self.to_dict()
+        x.update({':LABEL': self.label})
+        return x

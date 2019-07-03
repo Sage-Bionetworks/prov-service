@@ -1,31 +1,28 @@
 import uuid
 import json
 
-from synprov.mockup_data.dict import ActivityClass
+from synprov.models.activity import Activity
+from synprov.mockup_data.dict import ActivityClasses
 
-class Activity:
 
-    actArray = ActivityClass
+class MockActivity(Activity):
 
-    def __init__(self, aName = "", aClass = 0):
+    activity_classes = ActivityClasses
+
+    def __init__(self, name='', class_idx=0):
+        super().__init__(name=name)
         self.id = uuid.uuid1()
-        self.name = aName
-        self.class_ = self.actArray[aClass]
+        self._class = self.activity_classes[class_idx]
+        self.label = 'Activity'
+        self.openapi_types.update({'label': str})
 
-    def setName(self, param):
-        self.name = param
+    def select_class(self, class_idx):
+        self._class = self.activity_classes[class_idx]
 
-    def setClass(self, param):
-        self.class_ = self.actArray[param]
+    def get_class_count(self):
+        return len(self.activity_classes)
 
-    def getClassCount(self):
-        return len(self.actArray)
-
-    def getData(self):
-        x = {
-            "actId": str(self.id),
-            "name": self.name,
-            "class": self.class_,
-            ":LABEL": "Activity"
-        }
-        return json.dumps(x)
+    def get_data(self):
+        x = self.to_dict()
+        x.update({':LABEL': self.label})
+        return x
