@@ -114,7 +114,7 @@ paths:
 
 components:
   schemas:
-    ProvLabel:
+    ProvNode:
       type: object
       required:
         - name
@@ -133,7 +133,7 @@ components:
           type: string
     Activity:
       allOf:
-        - $ref: '#/components/schemas/ProvLabel'
+        - $ref: '#/components/schemas/ProvNode'
         - title: Activity
           type: object
           example:
@@ -145,7 +145,7 @@ components:
               type: string
     Reference:
       allOf:
-        - $ref: '#/components/schemas/ProvLabel'
+        - $ref: '#/components/schemas/ProvNode'
         - title: Reference
           type: object
           example:
@@ -159,9 +159,13 @@ components:
               type: string
             targetId:
               type: string
+            class:
+              type: string
+            subclass:
+              type: string
     Agent:
       allOf:
-        - $ref: '#/components/schemas/ProvLabel'
+        - $ref: '#/components/schemas/ProvNode'
         - title: Agent
           type: object
           example:
@@ -208,20 +212,41 @@ components:
           type: string
         class:
           type: string
+    ProvRelationship:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        startNode:
+          type: string
+        endNode:
+          type: string
+        type:
+          type: string
+          enum:
+            - WASASSOCIATEDWITH
+            - WASGENERATEDBY
+            - USED
+            - WASATTRIBUTEDTO
+        startNodeRole:
+          type: string
+        endNodeRole:
+          type: string
     D3Graph:
       title: D3Graph
       type: object
       properties:
         nodes:
           items:
-            $ref: '#components/schemas/Node'
+            $ref: '#components/schemas/D3Node'
           type: array
         relationships:
           items:
-            $ref: '#components/schemas/Relationship'
+            $ref: '#components/schemas/D3Link'
           type: array
-    Node:
-      title: Node
+    D3Node:
+      title: D3Node
       type: object
       properties:
         id:
@@ -232,8 +257,8 @@ components:
           type: array
         properties:
           type: object
-    Relationship:
-      title: Relationship
+    D3Link:
+      title: D3Relationship
       type: object
       properties:
         id:
