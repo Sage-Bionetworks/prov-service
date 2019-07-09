@@ -6,7 +6,7 @@ from synprov.mockup_data.activity import MockActivity
 from synprov.mockup_data.agent import MockAgent
 from synprov.mockup_data.reference import MockReference
 from synprov.mockup_data.relationship import MockRelationship
-from synprov.mockup_data.dict import ActivityRoles
+from synprov.mockup_data.dict import ReferenceSubclasses, ActivityRoles
 
 
 logger = logging.getLogger(__name__)
@@ -127,21 +127,21 @@ class ActivityMocker:
         return attributed_rels
 
     def save(self):
-        # self.gdb.createActivityNode(self.activity)
-        # for u in self.used_refs:
-        #     self.gdb.createReferenceNode(u)
-        # for ur in self.used_rels:
-        #     self.gdb.createRelationshipUsed(ur)
-        # for g in self.generated_refs:
-        #     self.gdb.createReferenceNode(g)
-        # for gr in self.generated_rels:
-        #     self.gdb.createRelationshipGenerated(gr)
-        # for a in self.agts:
-        #     self.gdb.createAgentNode(a)
-        # for ar in self.associated_rels:
-        #     self.gdb.createRelationshipAssociated(ar)
-        # for ar in self.attributed_rels:
-        #     self.gdb.createRelationshipAttributed(ar)
+        self.gdb.create_node(self.activity)
+        for u in self.used_refs:
+            self.gdb.create_node(u)
+        for ur in self.used_rels:
+            self.gdb.create_relationship(ur)
+        for g in self.generated_refs:
+            self.gdb.create_node(g)
+        for gr in self.generated_rels:
+            self.gdb.create_relationship(gr)
+        for a in self.agts:
+            self.gdb.create_node(a)
+        for ar in self.associated_rels:
+            self.gdb.create_relationship(ar)
+        for ar in self.attributed_rels:
+            self.gdb.create_relationship(ar)
         print(self.__repr__())
         return (self.ref_num, self.agt_num)
 
@@ -172,5 +172,7 @@ def _add_references(references, offset=0):
                             target_id='TargetID_' + str(idx + offset + 1),
                             target_version_id='1.0')
         tmp.subclass = ref[0]
+        tmp._class = [c for c in ReferenceSubclasses
+                      if ref[0] in ReferenceSubclasses[c]][0]
         refs.append(tmp)
     return refs
