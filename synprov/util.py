@@ -1,6 +1,10 @@
 import humps
 import json
 import re
+import iso8601
+import pytz
+
+from datetime import datetime
 
 from functools import wraps
 from hashlib import sha256
@@ -41,6 +45,12 @@ def neo4j_to_d3(results):
         nodes.append(_convert_node(record['target']))
         rels.append(_convert_relationship(record['relationship']))
     return {"nodes": nodes, "links": rels}
+
+
+def get_datetime():
+    _date_obj = iso8601.parse_date(datetime.now().isoformat())
+    _date_utc = _date_obj.astimezone(pytz.utc)
+    return _date_utc.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
 def _convert_node(neo4j_node):
