@@ -4,49 +4,52 @@
 @created: June/24/2019
 @author: madejp
 """
+import logging
 
 from py2neo import Graph, Node
+
+from synprov.mockup_data.dict import NodeRelationships
 
 class GraphDataBase:
 
    def __init__(self, graphConn):
       self.graph = graphConn
 
-   def createActivityNode(self, myArr):
-      # create activity node
-      nodeAct = Node("Activity", id=str(myArr.id), name=myArr.name, class_=myArr.class_)
-      self.graph.create(nodeAct)
+   def create_node(self, prov_object):
+      node_data = prov_object.get_data()
+      label = node_data.pop('label')
+      node = Node(
+         label,
+         **node_data
+      )
+      self.graph.create(node)
+      logging.info("Created node: {}".format(node))
 
-   def createAgentNode(self, myArr):
-      # create agent node
-      nodeAgt = Node("Agent", id=str(myArr.id), name=myArr.name)
-      self.graph.create(nodeAgt)
+   def create_relationship(self, myArr):
+      rel_data = myArr.get_data()
+      rel_type = rel_data.pop('type')
+      start_end_nodes = [(s, n) for (s, n) in NodeRelationships
+                         if NodeRelationships[(s, n)] == rel_type][0]
+      start_node = rel_data.pop('start_node')
+      end_node = rel_data.pop('end_node')
+      rel_props = ', '.join(['{}:"{}"'.format(k, v)
+                             for k, v in rel_data.items()])
+      query_base = (
+         '''
+         MATCH (s:{start} {{id:{{start_id}}}}), (e:{end} {{id:{{end_id}}}})
+         CREATE (s)-[r:{type} {{{props}}}]->(e)
+         RETURN r
+         '''
+      ).format(
+         start = start_end_nodes[0],
+         end=start_end_nodes[1],
+         type=rel_type,
+         props=rel_props
+      )
+      results = self.graph.run(
+         query_base,
+         start_id=start_node,
+         end_id=end_node
+      )
+      logging.info("Created relationship: {}".format(results.data()[0]))
 
-   def createReferenceNode(self, myArr):
-      # create reference node
-      nodeRef = Node("Reference", id=str(myArr.id), target_id=myArr.trg_id, target_version_id=myArr.trg_ver, name=myArr.name)
-      self.graph.create(nodeRef)
-
-   def createRelationshipUsed(self, myArr):
-      self.graph.run(
-         'MATCH (a:Activity {id: {startId}}), (r:Reference {id: {endId}}) \
-         CREATE (a)-[:USED { roles: {roles} }]->(r)',
-         startId=str(myArr.start_id), endId=str(myArr.end_id), roles=myArr.role)
-
-   def createRelationshipAssociated(self, myArr):
-      self.graph.run(
-         'MATCH (a:Activity {id: {startId}}), (r:Agent {id: {endId}}) \
-         CREATE (a)-[:WASASSOCIATEDWITH { roles: {roles}  }]->(r)',
-         startId=str(myArr.start_id), endId=str(myArr.end_id), roles=myArr.role)
-
-   def createRelationshipGenerated(self, myArr):
-      self.graph.run(
-         'MATCH (a:Reference {id: {startId}}), (r:Activity {id: {endId}}) \
-         CREATE (a)-[:WASGENERATEDBY { roles: {roles} }]->(r)',
-         startId=str(myArr.start_id), endId=str(myArr.end_id), roles=myArr.role)
-
-   def createRelationshipAttributed(self, myArr):
-      self.graph.run(
-         'MATCH (a:Reference {id: {startId}}), (r:Agent {id: {endId}}) \
-         CREATE (a)-[:WASATTRIBUTEDTO { roles: {roles} }]->(r)',
-         startId=str(myArr.start_id), endId=str(myArr.end_id), roles=myArr.role)
