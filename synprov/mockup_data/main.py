@@ -1,119 +1,75 @@
+import sys
+import logging
 import argparse
+
+from random import randrange
 from py2neo import Graph, Node
 
-from activity import Activity
-from agent import Agent
-from reference import Reference
-from relationship import Relationship
-from graphdatabase import GraphDataBase
+from synprov.mockup_data.activity import MockActivity
+from synprov.mockup_data.mocker import ActivityMocker
+from synprov.mockup_data.graphdatabase import GraphDataBase
+
+
+logging.basicConfig(format='%(asctime)s | %(levelname)s : %(message)s',
+                    level=logging.INFO,
+                    stream=sys.stdout)
 
 # ------------------------------
-NUMAGENTS = 5
-NUMREFERENCES = 10
 NUMACTIVITIES = 30
 # ------------------------------
 
-def addActivities(kt):
+
+def add_activities(kt):
     x = []
     for i in range(kt):
-        tmp = Activity("Activity_" + str(i+1), 0)
-        tmp.setClass( r.randrange(tmp.getClassCount()) )
-        x.append( tmp )
+        tmp = MockActivity(name='Activity_' + str(i+1),
+                           class_idx=0)
+        tmp.select_class(randrange(tmp.get_class_count()))
+        x.append(tmp)
     return x
 
-def addAgents(kt):
-    x = []
-    for i in range(kt):
-        tmp = Agent("User_" + str(i+1) )
-        x.append( tmp )
 
-    return x
+def create_mock_graph(graph_db, NUMACTIVITIES):
+    # SCRIPT
 
-def addReference(kt):
-    x = []
-    for i in range(kt):
-        tmp = Reference("TargetID_" + str(i+1), "1.0", "Reference_" + str(i+1) )
-        x.append( tmp )
+    # step 1 - Create activities:
+    logging.info("Generating table of Activities...")
+    activity_array = add_activities(NUMACTIVITIES)
 
-    return x
+    # step 2 - Create corresponding nodes and relationships
+    # for each activity:
+    ref_num = 0
+    agt_num = 0
+    for i in activity_array:
+        logging.info("Building Activity '{}' of class '{}'"
+                     .format(i.name, i._class))
+        act = ActivityMocker(graph_db, i, ref_num, agt_num)
+        (rn, an) = act.save()
+        ref_num += rn
+        agt_num += an
 
-def addRelationship(firstArr, secondArr, kt):
-# Header: ACTIVITY_ID | roles:string[] | AGENT_ID | TYPE
-    x = []
-    for i in range( len(firstArr) ):
-        dl = r.randrange(len(secondArr))
-        tmp = Relationship(firstArr[i].id, secondArr[dl].id, kt)
-        x.append( tmp )
-
-    return x
 
 # read input parameters
-parser = argparse.ArgumentParser(description='Generate sample provenance records.')
-parser.add_argument('nAgents', metavar='#Agents', type=int, nargs='+', default=5, help='number of Agents')
-parser.add_argument('nReferences', metavar='#References', type=int, nargs='+', default=10, help='number of References')
-parser.add_argument('nActivities', metavar='#Activities', type=int, nargs='+', default=30, help='number of Activities')
-args = parser.parse_args()
+parser = argparse.ArgumentParser(
+    description='Generate sample provenance records.'
+)
+parser.add_argument('nActivities',
+                    metavar='#Activities',
+                    type=int,
+                    nargs='+',
+                    default=30,
+                    help='number of Activities')
 
-# update reference values if needed
-NUMACTIVITIES = args.nActivities[0]
-NUMAGENTS = args.nAgents[0]
-NUMREFERENCES = args.nReferences[0]
 
-gdb = GraphDataBase( Graph(password = "neo4jj") )
+def main():
+    args = parser.parse_args()
 
-# SCRIPT
-# step 1 - Create sets of entity references:
-print("Generating table of References...")
-refArray = addReference(NUMREFERENCES)
-for i in refArray:
-    gdb.createReferenceNode( i )
-    print( i.getData() )
-print(" ")
+    # update reference values if needed
+    NUMACTIVITIES = args.nActivities[0]
 
-# step 2 - Create agent/user pool:
-print("Generating table of Agents...")
-agtArray = addAgents(NUMAGENTS)
-for i in agtArray:
-    gdb.createAgentNode( i )
-    print( i.getData() )
-print(" ")
+    gdb = GraphDataBase(Graph(password = "neo4jj"))
+    create_mock_graph(gdb, NUMACTIVITIES)
 
-# step 3 - Create activities:
-print("Generating table of Activities...")
-actArray = addActivities(NUMACTIVITIES)
-for i in actArray:
-    gdb.createActivityNode( i )
-    print( i.getData() )
-print(" ")
 
-# step 4 - create Activity -> :WASASSOCIATEDWITH -> Agent
-print("Generating :ASSOCIATED records")
-assArray = addRelationship(actArray, agtArray, 0)
-for i in assArray:
-    gdb.createRelationshipAssociated( i )
-    print( i.getData() )
-print(" ")
-
-# step 5 - create Reference -> :WASGENERATEDBY -> Activity
-print("Generating :GENERATEDBY records")
-assArray = addRelationship(refArray, actArray, 1)
-for i in assArray:
-    gdb.createRelationshipGenerated( i )
-    print( i.getData() )
-print(" ")
-
-# step 6 - create Activity-> :USED -> Reference
-print("Generating :USED records")
-assArray = addRelationship(actArray, refArray, 2)
-for i in assArray:
-    gdb.createRelationshipUsed( i )
-    print( i.getData() )
-print(" ")
-
-# step 7 - create Reference -> :ATTRIBUTEDTO -> Agent
-print("Generating :ATTRIBUTEDTO records")
-assArray = addRelationship(refArray, agtArray, 3)
-for i in assArray:
-    gdb.createRelationshipAttributed( i )
-    print( i.getData() )
-print(" ")
+if __name__ == "__main__":
+    main()

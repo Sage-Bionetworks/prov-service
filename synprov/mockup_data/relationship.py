@@ -1,39 +1,50 @@
+import uuid
 import json
 import random as r
 
-from synprov.mockup_data.dict import (AgentRoles,
-                                      ReferenceRoles,
-                                      ActivityClass,
-                                      RelationTypes)
+from synprov.models.prov_relationship import ProvRelationship
+from synprov.mockup_data.dict import (ActivityRoles,
+                                      NodeRelationships)
 
 
-class Relationship:
+class MockRelationship(ProvRelationship):
 
-    typesArr = RelationTypes
-    agentRoles = AgentRoles
-    referenceRoles = ReferenceRoles
+    node_relationships = NodeRelationships
 
-    def __init__(self, firstId, secondId, typeId):
+    def __init__(self, start_node, end_node, activity_class=None):
+        super().__init__(start_node=start_node.id, end_node=end_node.id)
 
-        self.agtCount = len(self.agentRoles)
-        self.refCount = len(self.referenceRoles)
+        self.start_id = start_node
+        self.end_id = end_node
 
-        self.start_id = firstId
-        self.end_id = secondId
-        if typeId == 0:
-            self.role = self.agentRoles[ r.randrange(self.agtCount) ]
-        elif typeId == 3:
-            self.role = self.agentRoles[ r.randrange(self.agtCount) ] + ";" + self.referenceRoles[r.randrange(self.refCount)]
-        else:
-            self.role = self.referenceRoles[r.randrange(self.refCount)]
-        self.type = self.typesArr[typeId]
+        start_end_nodes = (start_node.label, end_node.label)
+        self.type = self.node_relationships[start_end_nodes]
 
-    def getData(self):
-        x = {
-            ":START_ID": str(self.start_id),
-            "roles": self.role,
-            ":END_ID": str(self.end_id),
-            ":TYPE": self.type
-        }
+        if start_end_nodes == ('Activity', 'Agent'):
+            self.end_node_role = ActivityRoles[start_node._class][
+                'in_subclass'
+            ][self.type][end_node.label]['role']
+        elif start_end_nodes == ('Activity', 'Reference'):
+            self.end_node_role = ActivityRoles[start_node._class][
+                'in_subclass'
+            ][self.type][end_node.subclass]['role']
+        elif start_end_nodes == ('Reference', 'Activity'):
+            self.start_node_role = ActivityRoles[end_node._class][
+                'out_subclass'
+            ][self.type][start_node.subclass]['role']
+        elif start_end_nodes == ('Reference', 'Agent'):
+            self.end_node_role = ActivityRoles[activity_class][
+                'out_subclass'
+            ][self.type][end_node.label]['role']
+            self.start_node_role = ActivityRoles[activity_class][
+                'out_subclass'
+            ][self.type][start_node.subclass]['role']
 
-        return json.dumps(x)
+    def get_data(self):
+        x = self.to_dict()
+        x.update({
+            ':START_ID': str(self.start_id),
+            ':END_ID': str(self.end_id),
+            ':TYPE': self.type
+        })
+        return x
