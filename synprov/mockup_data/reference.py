@@ -4,6 +4,7 @@ import json
 from synprov.models.reference import Reference
 from synprov.mockup_data.dict import ReferenceClasses
 from synprov.mockup_data.dict import ReferenceSubclasses
+from synprov.util import get_datetime
 
 
 class MockReference(Reference):
@@ -20,7 +21,8 @@ class MockReference(Reference):
         super().__init__(name=name,
                          target_id=target_id,
                          target_version_id=target_version_id)
-        self.id = uuid.uuid1()
+        self.id = str(uuid.uuid1())
+        self.created_at = get_datetime()
         self.label = 'Reference'
         self.openapi_types.update({'label': str})
 
@@ -37,6 +39,4 @@ class MockReference(Reference):
         return len(self.reference_subclasses[self._class])
 
     def get_data(self):
-        x = self.to_dict()
-        x.update({':LABEL': self.label})
-        return x
+        return self.to_dict()

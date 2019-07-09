@@ -5,6 +5,7 @@ import random as r
 from synprov.models.prov_relationship import ProvRelationship
 from synprov.mockup_data.dict import (ActivityRoles,
                                       NodeRelationships)
+from synprov.util import get_datetime
 
 
 class MockRelationship(ProvRelationship):
@@ -13,7 +14,8 @@ class MockRelationship(ProvRelationship):
 
     def __init__(self, start_node, end_node, activity_class=None):
         super().__init__(start_node=start_node.id, end_node=end_node.id)
-
+        self.id = str(uuid.uuid1())
+        self.created_at = get_datetime()
         self.start_id = start_node
         self.end_id = end_node
 
@@ -41,10 +43,5 @@ class MockRelationship(ProvRelationship):
             ][self.type][start_node.subclass]['role']
 
     def get_data(self):
-        x = self.to_dict()
-        x.update({
-            ':START_ID': str(self.start_id),
-            ':END_ID': str(self.end_id),
-            ':TYPE': self.type
-        })
-        return x
+        return self.to_dict()
+
