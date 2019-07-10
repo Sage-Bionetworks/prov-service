@@ -23,8 +23,8 @@ class ActivityMocker:
         activity_subclasses = ActivityRoles[self.activity._class]
         self.in_subclasses = activity_subclasses['in_subclass']
         self.out_subclasses = activity_subclasses['out_subclass']
-        self.ref_num = ref_num
-        self.agt_num = agt_num
+        self.ref_num = self.count_refs() + 1
+        self.agt_num = self.count_agts() + 1
         self.used_refs = self.add_used(limit=randrange(ref_limit)+1)
         self.used_rels = self.connect_used()
         self.agts = self.add_agents()
@@ -79,14 +79,34 @@ class ActivityMocker:
                                    if a.id == r.end_node][0]))
         return '\n'.join(rels)
 
+    def count_refs(self):
+        result = self.gdb.graph.run(
+            '''
+            MATCH (:Reference)
+            RETURN count(*) as count
+            '''
+        )
+        return result.data()[0]['count']
+
+    def count_agts(self):
+        result = self.gdb.graph.run(
+            '''
+            MATCH (:Agent)
+            RETURN count(*) as count
+            '''
+        )
+        return result.data()[0]['count']
+
     def add_used(self, limit=3):
         used_refs_data = _unpack_subclass_roles(self.in_subclasses,
                                                 'USED')
         used_refs_data = _expand_roles_data(used_refs_data)
         if len(used_refs_data) > limit:
             used_refs_data = sample(used_refs_data, limit)
+        offset = max(self.ref_num, 1)
+        refs = _add_references(used_refs_data, offset=offset)
         self.ref_num = self.ref_num + len(used_refs_data)
-        return _add_references(used_refs_data, offset=self.ref_num)
+        return refs
 
     def connect_used(self):
         logger.debug("Generating :USED records")
@@ -98,8 +118,9 @@ class ActivityMocker:
         agts_data = _unpack_subclass_roles(self.in_subclasses,
                                            'WASASSOCIATEDWITH')
         agts_data = _expand_roles_data(agts_data)
+        agts = _add_agents(agts_data, offset=self.agt_num)
         self.agt_num = self.agt_num + len(agts_data)
-        return _add_agents(agts_data, offset=self.agt_num)
+        return agts
 
     def connect_associated(self):
         logger.debug("Generating :WASASSOCIATEDWITH records")
@@ -113,9 +134,12 @@ class ActivityMocker:
         generated_refs_data = _expand_roles_data(generated_refs_data)
         if len(generated_refs_data) > limit:
             generated_refs_data = sample(generated_refs_data, limit)
+        refs = _add_references(generated_refs_data,
+                               offset=self.ref_num,
+                               exists=False)
         self.ref_num = self.ref_num + len(generated_refs_data)
-        return _add_references(generated_refs_data,
-                               offset=self.ref_num)
+        return refs
+
 
     def connect_generated(self):
         logger.debug("Generating :WASGENERATEDBY records")
@@ -146,7 +170,7 @@ class ActivityMocker:
             self.gdb.create_relationship(ar)
         for ar in self.attributed_rels:
             self.gdb.create_relationship(ar)
-        print(self.__repr__())
+        logging.info("Activity relationships:\n{}".format(self.__repr__()))
         return (self.ref_num, self.agt_num)
 
 
@@ -154,6 +178,7 @@ class MockFactory:
     def __init__(self, type, **kwargs):
         mock_types = {
             'Reference': MockReference,
+            'Agent': MockAgent,
         }
         self.obj = mock_types[type](**kwargs)
 
@@ -181,64 +206,76 @@ def _node_to_object(node, mock_type):
 
 
 def _create_agent(agt, idx, offset):
-    mock_agt = MockAgent(name='User_' + str(idx + offset + 1),
-                         user_id='UserID_' + str(idx + offset + 1))
+    mock_agt = MockAgent(name='User_' + str(idx + offset),
+                         user_id='UserID_' + str(idx + offset))
+    logging.debug("agt created: {}".format(mock_agt))
     return mock_agt
 
 
 def _fetch_agent(agt):
+    logging.debug("fetching existing Agent node")
     # TODO: any way to make less deterministic than 'first()'?
-    agt_node = matcher.match(
+    agt_nodes = matcher.match(
         'Agent',
-        subclass=agt[0]
-    ).first()
-    return _node_to_object(agt_node, 'Reference')
+    )
+    agt_node = agt_nodes.skip(randrange(len(agt_nodes))).first()
+    return _node_to_object(agt_node, 'Agent')
 
 
-def _add_agents(agents, offset=0, exists=True):
+def _add_agents(agents, offset=0, exists=None):
     agts = []
     for idx, agt in enumerate(agents):
+        if exists is None:
+            exists = randrange(2)
         exists = randrange(2)
         if exists:
             try:
                 tmp = _fetch_agent(agt)
             except:
+                logging.debug("failed; creating new")
                 tmp = _create_agent(agt, idx, offset)
         else:
+            logging.debug("creating new agent")
             tmp = _create_agent(agt, idx, offset)
         agts.append(tmp)
     return(agts)
 
 
 def _create_reference(ref, idx, offset):
-    mock_ref = MockReference(name='Reference_' + str(idx + offset + 1),
-                             target_id='TargetID_' + str(idx + offset + 1),
+    mock_ref = MockReference(name='Reference_' + str(idx + offset),
+                             target_id='TargetID_' + str(idx + offset),
                              target_version_id='1.0')
     mock_ref.subclass = ref[0]
     mock_ref._class = [c for c in ReferenceSubclasses
                        if ref[0] in ReferenceSubclasses[c]][0]
+    logging.debug("ref created: {}".format(mock_ref))
     return mock_ref
 
 
 def _fetch_reference(ref):
+    logging.debug("fetching existing Reference node")
     # TODO: any way to make less deterministic than 'first()'?
-    ref_node = matcher.match(
+    ref_nodes = matcher.match(
         'Reference',
         subclass=ref[0]
-    ).first()
+    )
+    ref_node = ref_nodes.skip(randrange(len(ref_nodes))).first()
     return _node_to_object(ref_node, 'Reference')
 
 
-def _add_references(references, offset=0):
+def _add_references(references, offset=0, exists=None):
     refs = []
     for idx, ref in enumerate(references):
-        exists = randrange(2)
+        if exists is None:
+            exists = randrange(2)
         if exists:
             try:
                 tmp = _fetch_reference(ref)
             except:
+                logging.debug("failed; creating new")
                 tmp = _create_reference(ref, idx, offset)
         else:
+            logging.debug("creating new reference")
             tmp = _create_reference(ref, idx, offset)
         refs.append(tmp)
     return refs
