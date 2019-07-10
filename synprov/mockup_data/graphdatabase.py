@@ -10,6 +10,7 @@ from py2neo import Graph, Node
 
 from synprov.mockup_data.dict import NodeRelationships
 
+
 class GraphDataBase:
 
    def __init__(self, graphConn):
@@ -22,11 +23,13 @@ class GraphDataBase:
          label,
          **node_data
       )
-      self.graph.create(node)
-      logging.info("Created node: {}".format(node))
+      node.__primarylabel__ = label
+      node.__primarykey__ = 'id'
+      self.graph.merge(node)
+      logging.debug("Created node: {}".format(node))
 
-   def create_relationship(self, myArr):
-      rel_data = myArr.get_data()
+   def create_relationship(self, relationship):
+      rel_data = relationship.get_data()
       rel_type = rel_data.pop('type')
       start_end_nodes = [(s, n) for (s, n) in NodeRelationships
                          if NodeRelationships[(s, n)] == rel_type][0]
@@ -37,7 +40,7 @@ class GraphDataBase:
       query_base = (
          '''
          MATCH (s:{start} {{id:{{start_id}}}}), (e:{end} {{id:{{end_id}}}})
-         CREATE (s)-[r:{type} {{{props}}}]->(e)
+         MERGE (s)-[r:{type} {{{props}}}]->(e)
          RETURN r
          '''
       ).format(
@@ -51,5 +54,5 @@ class GraphDataBase:
          start_id=start_node,
          end_id=end_node
       )
-      logging.info("Created relationship: {}".format(results.data()[0]))
+      logging.debug("Created relationship: {}".format(results.data()[0]))
 

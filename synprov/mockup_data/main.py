@@ -3,8 +3,9 @@ import logging
 import argparse
 
 from random import randrange
-from py2neo import Graph, Node
+from py2neo import Graph, Node, NodeMatcher
 
+from synprov.config import neomod
 from synprov.mockup_data.activity import MockActivity
 from synprov.mockup_data.mocker import ActivityMocker
 from synprov.mockup_data.graphdatabase import GraphDataBase
@@ -13,6 +14,8 @@ from synprov.mockup_data.graphdatabase import GraphDataBase
 logging.basicConfig(format='%(asctime)s | %(levelname)s : %(message)s',
                     level=logging.INFO,
                     stream=sys.stdout)
+graph = Graph(neomod.neo.db.url)
+matcher = NodeMatcher(graph)
 
 # ------------------------------
 NUMACTIVITIES = 30
@@ -20,9 +23,16 @@ NUMACTIVITIES = 30
 
 
 def add_activities(kt):
+    result = graph.run(
+        '''
+        MATCH (:Activity)
+        RETURN count(*) as count
+        '''
+    )
+    offset = result.data()[0]['count']
     x = []
     for i in range(kt):
-        tmp = MockActivity(name='Activity_' + str(i+1),
+        tmp = MockActivity(name='Activity_' + str(i+1+offset),
                            class_idx=0)
         tmp.select_class(randrange(tmp.get_class_count()))
         x.append(tmp)
@@ -67,7 +77,7 @@ def main():
     # update reference values if needed
     NUMACTIVITIES = args.nActivities[0]
 
-    gdb = GraphDataBase(Graph(password = "neo4jj"))
+    gdb = GraphDataBase(graph)
     create_mock_graph(gdb, NUMACTIVITIES)
 
 
