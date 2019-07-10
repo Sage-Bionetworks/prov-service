@@ -57,7 +57,7 @@ def _convert_node(neo4j_node):
     return {
         'id': neo4j_node.identity,
         'labels': list(neo4j_node.labels),
-        'properties': neo4j_node
+        'properties': dict(neo4j_node)
     }
 
 
@@ -67,7 +67,7 @@ def _convert_relationship(neo4j_rel):
         'type': list(neo4j_rel.types()),
         'startNode': neo4j_rel.start_node.identity,
         'endNode': neo4j_rel.end_node.identity,
-        'properties': neo4j_rel,
+        'properties': dict(neo4j_rel),
         'source': neo4j_rel.start_node.identity,
         'target': neo4j_rel.end_node.identity,
         'linknum': 1
