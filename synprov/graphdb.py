@@ -9,7 +9,7 @@ graph = Graph(neomod.neo.db.url)
 # --------------------------------------------------------------
 # LOADING SCRIPT
 # --------------------------------------------------------------
-def init_db(num_activities=8):
+def init_db(num_activities=30):
     graph.run(
         '''
         MATCH (n)
