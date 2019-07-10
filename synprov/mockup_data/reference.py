@@ -16,21 +16,16 @@ class MockReference(Reference):
                  name='',
                  target_id='',
                  target_version_id='1',
-                 class_idx=0,
-                 subclass_idx=0):
+                 **kwargs):
         super().__init__(name=name,
                          target_id=target_id,
                          target_version_id=target_version_id)
         self.id = str(uuid.uuid1())
         self.created_at = get_datetime()
         self.label = 'Reference'
+        for kwa in kwargs:
+            self.__setattr__(kwa, kwargs[kwa])
         self.openapi_types.update({'label': str})
-
-    def select_class(self, class_idx):
-        self._class = self.reference_classes[class_idx]
-
-    def select_subclass(self, subclass_idx):
-        self.subclass = self.reference_subclasses[self._class][subclass_idx]
 
     def get_class_count(self):
         return len(self.reference_classes)

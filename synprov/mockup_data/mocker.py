@@ -1,7 +1,9 @@
 import logging
 
 from random import randrange, sample
+from py2neo import Graph, NodeMatcher
 
+from synprov.config import neomod
 from synprov.mockup_data.activity import MockActivity
 from synprov.mockup_data.agent import MockAgent
 from synprov.mockup_data.reference import MockReference
@@ -10,10 +12,12 @@ from synprov.mockup_data.dict import ReferenceSubclasses, ActivityRoles
 
 
 logger = logging.getLogger(__name__)
+graph = Graph(neomod.neo.db.url)
+matcher = NodeMatcher(graph)
 
 
 class ActivityMocker:
-    def __init__(self, graph_db, activity, ref_num=0, agt_num=0, ref_limit=3):
+    def __init__(self, graph_db, activity, ref_num=0, agt_num=0, ref_limit=2):
         self.gdb = graph_db
         self.activity = activity
         activity_subclasses = ActivityRoles[self.activity._class]
@@ -21,11 +25,11 @@ class ActivityMocker:
         self.out_subclasses = activity_subclasses['out_subclass']
         self.ref_num = ref_num
         self.agt_num = agt_num
-        self.used_refs = self.add_used(limit=ref_limit)
+        self.used_refs = self.add_used(limit=randrange(ref_limit)+1)
         self.used_rels = self.connect_used()
         self.agts = self.add_agents()
         self.associated_rels = self.connect_associated()
-        self.generated_refs = self.add_generated(limit=ref_limit)
+        self.generated_refs = self.add_generated(limit=randrange(ref_limit-1)+1)
         self.generated_rels = self.connect_generated()
         self.attributed_rels = self.connect_attributed()
 
@@ -146,6 +150,17 @@ class ActivityMocker:
         return (self.ref_num, self.agt_num)
 
 
+class MockFactory:
+    def __init__(self, type, **kwargs):
+        mock_types = {
+            'Reference': MockReference,
+        }
+        self.obj = mock_types[type](**kwargs)
+
+    def create(self):
+        return self.obj
+
+
 def _unpack_subclass_roles(subclass_array, relationship_type):
     parts = [(sc, sci['role'], randrange(sci['num'][0], sci['num'][1]+1))
                 for sc, sci in subclass_array[relationship_type].items()]
@@ -156,23 +171,74 @@ def _expand_roles_data(roles_data):
     return [r[0:2]*r[2] for r in roles_data if r[2]]
 
 
-def _add_agents(agents, offset=0):
+def _node_to_object(node, mock_type):
+    mock_data = dict(node)
+    mock_data.update({
+        'label': list(node.labels)[0]
+    })
+    mock_object = MockFactory(mock_type, **mock_data).create()
+    return mock_object
+
+
+def _create_agent(agt, idx, offset):
+    mock_agt = MockAgent(name='User_' + str(idx + offset + 1),
+                         user_id='UserID_' + str(idx + offset + 1))
+    return mock_agt
+
+
+def _fetch_agent(agt):
+    # TODO: any way to make less deterministic than 'first()'?
+    agt_node = matcher.match(
+        'Agent',
+        subclass=agt[0]
+    ).first()
+    return _node_to_object(agt_node, 'Reference')
+
+
+def _add_agents(agents, offset=0, exists=True):
     agts = []
     for idx, agt in enumerate(agents):
-        tmp = MockAgent(name='User_' + str(idx + offset + 1),
-                        user_id='UserID_' + str(idx + offset + 1))
+        exists = randrange(2)
+        if exists:
+            try:
+                tmp = _fetch_agent(agt)
+            except:
+                tmp = _create_agent(agt, idx, offset)
+        else:
+            tmp = _create_agent(agt, idx, offset)
         agts.append(tmp)
     return(agts)
+
+
+def _create_reference(ref, idx, offset):
+    mock_ref = MockReference(name='Reference_' + str(idx + offset + 1),
+                             target_id='TargetID_' + str(idx + offset + 1),
+                             target_version_id='1.0')
+    mock_ref.subclass = ref[0]
+    mock_ref._class = [c for c in ReferenceSubclasses
+                       if ref[0] in ReferenceSubclasses[c]][0]
+    return mock_ref
+
+
+def _fetch_reference(ref):
+    # TODO: any way to make less deterministic than 'first()'?
+    ref_node = matcher.match(
+        'Reference',
+        subclass=ref[0]
+    ).first()
+    return _node_to_object(ref_node, 'Reference')
 
 
 def _add_references(references, offset=0):
     refs = []
     for idx, ref in enumerate(references):
-        tmp = MockReference(name='Reference_' + str(idx + offset + 1),
-                            target_id='TargetID_' + str(idx + offset + 1),
-                            target_version_id='1.0')
-        tmp.subclass = ref[0]
-        tmp._class = [c for c in ReferenceSubclasses
-                      if ref[0] in ReferenceSubclasses[c]][0]
+        exists = randrange(2)
+        if exists:
+            try:
+                tmp = _fetch_reference(ref)
+            except:
+                tmp = _create_reference(ref, idx, offset)
+        else:
+            tmp = _create_reference(ref, idx, offset)
         refs.append(tmp)
     return refs

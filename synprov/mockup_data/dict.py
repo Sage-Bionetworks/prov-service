@@ -48,7 +48,7 @@ ActivityRoles = {
     'Tool session': {
         'in_subclass': {
             'USED': {
-                'File': {'role': 'dataToInput', 'num': (1, 4)},
+                'File': {'role': 'dataToInput', 'num': (1, 1)},
                 'Tool': {'role': 'toolToExecute', 'num': (1, 1)}
             },
             'WASASSOCIATEDWITH': {
