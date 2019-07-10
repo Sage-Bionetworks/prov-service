@@ -1,2 +1,5 @@
 [run]
-omit = synprov/test/*
+omit =
+    synprov/test/*
+    synprov/models/*
+    synprov/mockup_data/*
