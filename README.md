@@ -1,5 +1,5 @@
 # Provenance Service
-[![Build Status](https://travis-ci.com/Sage-Bionetworks/prov-service.svg?branch=master)](https://travis-ci.com/Sage-Bionetworks/prov-service) [![Coverage Status](https://coveralls.io/repos/github/Sage-Bionetworks/prov-service/badge.svg?branch=master)](https://coveralls.io/github/Sage-Bionetworks/prov-service?branch=master)
+[![Build Status](https://travis-ci.com/Sage-Bionetworks/prov-service.svg?branch=master)](https://travis-ci.com/Sage-Bionetworks/prov-service) [![Coverage Status](https://coveralls.io/repos/github/Sage-Bionetworks/prov-service/badge.svg?branch=master&service=github)](https://coveralls.io/github/Sage-Bionetworks/prov-service?branch=master&service=github)
 
 Lightweight implementation of the Synapse Activity services, based on the PROV spec.
 
