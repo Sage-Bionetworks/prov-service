@@ -6,7 +6,7 @@ import humps
 from py2neo import Graph, Node, NodeMatcher
 
 from synprov.config import neomod
-from synprov.graphmodels import Activity, Reference, Agent
+from synprov.graph import GraphActivity, GraphReference, GraphAgent
 
 
 graph = Graph(neomod.neo.db.url)
