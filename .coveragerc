@@ -2,4 +2,6 @@
 omit =
     synprov/test/*
     synprov/models/*
-    synprov/mockup_data/*
+    synprov/controllers/*
+    synprov/mock/*
+    synprov/encoder.py
