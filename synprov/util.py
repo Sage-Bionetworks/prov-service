@@ -188,22 +188,60 @@ def get_datetime():
     return _date_utc.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
+def neo4j_export(results):
+    nodes, rels = _convert_results(results)
+    return {
+        "results": [{
+            "columns": ["Activity", "Reference", "Agent"],
+            "data": [{
+                "graph": {
+                    "nodes": nodes,
+                    "relationships": rels
+                }
+            }]
+        }]
+    }
+
+
+def neo4j_to_d3(results):
+    nodes, rels = _convert_results(results)
+    return {"nodes": nodes, "links": rels}
+
+
+def _convert_results(neo4j_results):
+    nodes = []
+    node_ids = []
+    rels = []
+    rel_ids = []
+    for record in neo4j_results:
+        if record['source'].identity not in node_ids:
+            nodes.append(_convert_node(record['source']))
+            node_ids.append(record['source'].identity)
+        if record['target'].identity not in node_ids:
+            nodes.append(_convert_node(record['target']))
+            node_ids.append(record['target'].identity)
+        if record['relationship'].identity not in rel_ids:
+            rels.append(_convert_relationship(record['relationship']))
+            rel_ids.append(record['relationship'].identity)
+    return nodes, rels
+
+
 def _convert_node(neo4j_node):
     return {
-        'id': neo4j_node.identity,
+        'id': str(neo4j_node.identity),
         'labels': list(neo4j_node.labels),
-        'properties': neo4j_node
+        'properties': dict(neo4j_node)
     }
 
 
 def _convert_relationship(neo4j_rel):
     return {
-        'id': neo4j_rel.identity,
+        'id': str(neo4j_rel.identity),
         'type': list(neo4j_rel.types()),
-        'startNode': neo4j_rel.start_node.identity,
-        'endNode': neo4j_rel.end_node.identity,
-        'properties': neo4j_rel,
-        'source': neo4j_rel.start_node.identity,
-        'target': neo4j_rel.end_node.identity,
+        'startNode': str(neo4j_rel.start_node.identity),
+        'endNode': str(neo4j_rel.end_node.identity),
+        'properties': dict(neo4j_rel),
+        'source': str(neo4j_rel.start_node.identity),
+        'target': str(neo4j_rel.end_node.identity),
         'linknum': 1
     }

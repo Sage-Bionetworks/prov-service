@@ -169,11 +169,11 @@ ActivityRoles = {
         },
         'out_subclass': {
             'WASGENERATEDBY': {
-                'Memo': {'role': 'star', 'num': (1, 1)}
+                'Star': {'role': 'star', 'num': (1, 1)}
             },
             'WASATTRIBUTEDTO': {
                 'Agent': {'role': 'creator', 'num': (1, 1)},
-                'Memo': {'role': 'star', 'num': (1, 1)}
+                'Star': {'role': 'star', 'num': (1, 1)}
             }
         }
     }
