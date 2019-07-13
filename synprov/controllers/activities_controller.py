@@ -1,37 +1,31 @@
 import connexion
 import six
-import uuid
-import humps
-import json
 
-from py2neo import Graph, Node, NodeMatcher
-
-from synprov.config import neomod
-from synprov.graph import GraphActivity, GraphReference, GraphAgent
-from synprov.util import neo4j_to_d3
-
-
-graph = Graph(neomod.neo.db.url)
+from synprov.models import Activity  # noqa: E501
+from synprov.models import ActivityForm  # noqa: E501
+from synprov.models import D3Graph  # noqa: E501
+from synprov import util
+from synprov.graph.controllers import activities_controller as controller
 
 
 def create_activity(body):  # noqa: E501
-    """Create a new.
+    """Create a new activity
 
     Create a new Activity. If the passed Activity object contains a Used array, you must set the concreteType field of each Used subclass. # noqa: E501
 
-    :param body:
+    :param body: 
     :type body: dict | bytes
 
     :rtype: Activity
     """
-    # act = Activity(**humps.decamelize(body))
-    # act.save()
+    if connexion.request.is_json:
+        body = ActivityForm.from_dict(connexion.request.get_json())  # noqa: E501
+    return controller.create_activity(
+        body=body
+    )
 
-    # return act.node
-    return 'Not Implemented', 501
 
-
-def get_activities_graph(limit=20):  # noqa: E501
+def get_activities_graph(limit=None):  # noqa: E501
     """Get provenance graph
 
     Retrieve all nodes and relationships in the graph that pass filters.  # noqa: E501
@@ -41,14 +35,6 @@ def get_activities_graph(limit=20):  # noqa: E501
 
     :rtype: D3Graph
     """
-    # TODO: with the current query, the 'limit' parameter applies
-    # to relationships, not really to nodes
-    results = graph.run(
-        '''
-        MATCH (s)-[r]-(t)
-        RETURN s as source, r as relationship, t as target
-        LIMIT {limit}
-        ''',
+    return controller.get_activities_graph(
         limit=limit
     )
-    return neo4j_to_d3(results.data())
