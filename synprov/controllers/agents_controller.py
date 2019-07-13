@@ -1,25 +1,23 @@
 import connexion
 import six
-import uuid
-import humps
 
-from py2neo import Graph, Node, NodeMatcher
-
-from synprov.config import neomod
-from synprov.graphmodels import Activity, Reference, Agent
+from synprov.models import D3Graph  # noqa: E501
+from synprov import util
+from synprov.graph.controllers import agents_controller as controller
 
 
-graph = Graph(neomod.neo.db.url)
+def get_agent_subgraph(id, limit=None):  # noqa: E501
+    """Get subgraph connected to an agent
 
+    Retrieve the nodes and relationships in a neighborhood around a specified user.  # noqa: E501
 
-def get_agent_subgraph(id):  # noqa: E501
-    """Get subgraph connected to an agent.
-
-    Retrieve all nodes and relationships in the graph that pass filters. # noqa: E501
-
-    :param id: The ID of the agent to fetch.
+    :param id: user ID
     :type id: str
+    :param limit: maximum number of nodes to return
+    :type limit: int
 
-    :rtype: Graph
+    :rtype: D3Graph
     """
-    return 'Not Implemented', 501
+    return controller.get_agent_subgraph(
+        id=id, limit=limit
+    )

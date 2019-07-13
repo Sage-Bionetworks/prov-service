@@ -6,9 +6,9 @@ from random import randrange
 from py2neo import Graph, Node, NodeMatcher
 
 from synprov.config import neomod
-from synprov.mockup_data.activity import MockActivity
-from synprov.mockup_data.mocker import ActivityMocker
-from synprov.mockup_data.graphdatabase import GraphDataBase
+from synprov.mock.models.activity import MockActivity
+from synprov.mock.mocker import ActivityMocker
+from synprov.graph.client import GraphClient
 
 
 logging.basicConfig(format='%(asctime)s | %(levelname)s : %(message)s',
@@ -77,8 +77,8 @@ def main():
     # update reference values if needed
     NUMACTIVITIES = args.nActivities[0]
 
-    gdb = GraphDataBase(graph)
-    create_mock_graph(gdb, NUMACTIVITIES)
+    gc = GraphClient(graph)
+    create_mock_graph(gc, NUMACTIVITIES)
 
 
 if __name__ == "__main__":

@@ -8,16 +8,19 @@ import logging
 
 from py2neo import Graph, Node
 
-from synprov.mockup_data.dict import NodeRelationships
+from synprov.mock.dict import NodeRelationships
 
 
-class GraphDataBase:
+logger = logging.getLogger(__name__)
 
-   def __init__(self, graphConn):
-      self.graph = graphConn
+
+class GraphClient:
+
+   def __init__(self, graph):
+      self.graph = graph
 
    def create_node(self, prov_object):
-      node_data = prov_object.get_data()
+      node_data = prov_object.to_dict()
       label = node_data.pop('label')
       node = Node(
          label,
@@ -26,10 +29,10 @@ class GraphDataBase:
       node.__primarylabel__ = label
       node.__primarykey__ = 'id'
       self.graph.merge(node)
-      logging.debug("Created node: {}".format(node))
+      logger.debug("Created node: {}".format(node))
 
    def create_relationship(self, relationship):
-      rel_data = relationship.get_data()
+      rel_data = relationship.to_dict()
       rel_type = rel_data.pop('type')
       start_end_nodes = [(s, n) for (s, n) in NodeRelationships
                          if NodeRelationships[(s, n)] == rel_type][0]
@@ -54,5 +57,5 @@ class GraphDataBase:
          start_id=start_node,
          end_id=end_node
       )
-      logging.debug("Created relationship: {}".format(results.data()[0]))
+      logger.debug("Created relationship: {}".format(results.data()[0]))
 

@@ -4,11 +4,11 @@ from random import randrange, sample
 from py2neo import Graph, NodeMatcher
 
 from synprov.config import neomod
-from synprov.mockup_data.activity import MockActivity
-from synprov.mockup_data.agent import MockAgent
-from synprov.mockup_data.reference import MockReference
-from synprov.mockup_data.relationship import MockRelationship
-from synprov.mockup_data.dict import ReferenceSubclasses, ActivityRoles
+from synprov.mock.models.activity import MockActivity
+from synprov.mock.models.agent import MockAgent
+from synprov.mock.models.reference import MockReference
+from synprov.mock.models.relationship import MockRelationship
+from synprov.mock.dict import ReferenceSubclasses, ActivityRoles
 
 
 logger = logging.getLogger(__name__)
@@ -17,8 +17,13 @@ matcher = NodeMatcher(graph)
 
 
 class ActivityMocker:
-    def __init__(self, graph_db, activity, ref_num=0, agt_num=0, ref_limit=2):
-        self.gdb = graph_db
+    def __init__(self,
+                 graph_client,
+                 activity,
+                 ref_num=0,
+                 agt_num=0,
+                 ref_limit=2):
+        self.gc = graph_client
         self.activity = activity
         activity_subclasses = ActivityRoles[self.activity._class]
         self.in_subclasses = activity_subclasses['in_subclass']
@@ -80,7 +85,7 @@ class ActivityMocker:
         return '\n'.join(rels)
 
     def count_refs(self):
-        result = self.gdb.graph.run(
+        result = self.gc.graph.run(
             '''
             MATCH (:Reference)
             RETURN count(*) as count
@@ -89,7 +94,7 @@ class ActivityMocker:
         return result.data()[0]['count']
 
     def count_agts(self):
-        result = self.gdb.graph.run(
+        result = self.gc.graph.run(
             '''
             MATCH (:Agent)
             RETURN count(*) as count
@@ -140,7 +145,6 @@ class ActivityMocker:
         self.ref_num = self.ref_num + len(generated_refs_data)
         return refs
 
-
     def connect_generated(self):
         logger.debug("Generating :WASGENERATEDBY records")
         generated_rels = [MockRelationship(gen, self.activity)
@@ -155,22 +159,22 @@ class ActivityMocker:
         return attributed_rels
 
     def save(self):
-        self.gdb.create_node(self.activity)
+        self.gc.create_node(self.activity)
         for u in self.used_refs:
-            self.gdb.create_node(u)
+            self.gc.create_node(u)
         for ur in self.used_rels:
-            self.gdb.create_relationship(ur)
+            self.gc.create_relationship(ur)
         for g in self.generated_refs:
-            self.gdb.create_node(g)
+            self.gc.create_node(g)
         for gr in self.generated_rels:
-            self.gdb.create_relationship(gr)
+            self.gc.create_relationship(gr)
         for a in self.agts:
-            self.gdb.create_node(a)
+            self.gc.create_node(a)
         for ar in self.associated_rels:
-            self.gdb.create_relationship(ar)
+            self.gc.create_relationship(ar)
         for ar in self.attributed_rels:
-            self.gdb.create_relationship(ar)
-        logging.info("Activity relationships:\n{}".format(self.__repr__()))
+            self.gc.create_relationship(ar)
+        logging.debug("Activity relationships:\n{}".format(self.__repr__()))
         return (self.ref_num, self.agt_num)
 
 
@@ -214,7 +218,6 @@ def _create_agent(agt, idx, offset):
 
 def _fetch_agent(agt):
     logging.debug("fetching existing Agent node")
-    # TODO: any way to make less deterministic than 'first()'?
     agt_nodes = matcher.match(
         'Agent',
     )
@@ -254,7 +257,6 @@ def _create_reference(ref, idx, offset):
 
 def _fetch_reference(ref):
     logging.debug("fetching existing Reference node")
-    # TODO: any way to make less deterministic than 'first()'?
     ref_nodes = matcher.match(
         'Reference',
         subclass=ref[0]
