@@ -69,13 +69,19 @@ http://localhost:8080/rest/openapi.json
 
 ## Running with Docker
 
-To run the server on a Docker container, please execute the following from the root directory:
+To run the server on a Docker container, first store the username and password from your environment as a file under `data/dbms`:
 
-> **Note:** In order to use the server container, which requires a MongoDB database connection, you should have [Docker Compose](https://docs.docker.com/compose/overview/) installed.
+```shell
+bash .build/build_auth_string.sh ${NEO4J_USERNAME}:${NEO4J_PASSWORD} > data/dbms/auth
+```
+
+Then execute the following from the root directory:
 
 ```shell
 docker-compose up --build
 ```
+
+> **Note:** In order to use the server container, which requires a Neo4j database connection, you should have [Docker Compose](https://docs.docker.com/compose/overview/) installed.
 
 After running this command, the URLs in the previous section should work.
 
