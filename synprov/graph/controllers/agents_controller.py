@@ -3,13 +3,10 @@ import six
 import uuid
 import humps
 
-from py2neo import Graph, Node, NodeMatcher
+from py2neo import Node, NodeMatcher
 
-from synprov.config import neomod
+from synprov.config import neo4j_connection as graph
 from synprov.graph import GraphActivity, GraphReference, GraphAgent
-
-
-graph = Graph(neomod.neo.db.url)
 
 
 def get_agent_subgraph(id):  # noqa: E501

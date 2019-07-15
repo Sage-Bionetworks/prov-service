@@ -1,6 +1,5 @@
 import uuid
 
-from synprov.config import neomod
 from synprov.models.agent import Agent
 from synprov.util import get_datetime
 

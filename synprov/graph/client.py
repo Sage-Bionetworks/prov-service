@@ -6,7 +6,7 @@
 """
 import logging
 
-from py2neo import Graph, Node
+from py2neo import Node
 
 from synprov.mock.dict import NodeRelationships
 

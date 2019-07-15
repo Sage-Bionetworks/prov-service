@@ -2,7 +2,7 @@ import logging
 
 from py2neo import Graph
 
-from synprov.config import neomod
+from synprov.config import neo4j_connection as graph
 from synprov.models.activity_form import ActivityForm
 from synprov.graph.client import GraphClient
 from synprov.graph.models.activity import GraphActivity
@@ -12,7 +12,6 @@ from synprov.graph.models.relationship import GraphRelationship
 
 
 logger = logging.getLogger(__name__)
-graph = Graph(neomod.neo.db.url)
 
 
 class ActivityBuilder(ActivityForm):

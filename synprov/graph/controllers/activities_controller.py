@@ -4,14 +4,11 @@ import uuid
 import humps
 import json
 
-from py2neo import Graph, Node, NodeMatcher
+from py2neo import Node, NodeMatcher
 
-from synprov.config import neomod
+from synprov.config import neo4j_connection as graph
 from synprov.graph import GraphActivity, GraphReference, GraphAgent
 from synprov.util import neo4j_to_d3
-
-
-graph = Graph(neomod.neo.db.url)
 
 
 def create_activity(body=None):  # noqa: E501

@@ -1,14 +1,7 @@
 import uuid
 
-from py2neo import Graph, Node, Relationship, NodeMatcher
-
-from synprov.config import neomod
 from synprov.models.reference import Reference
-from synprov.models.agent import Agent
 from synprov.util import get_datetime
-
-graph = Graph(neomod.neo.db.url)
-matcher = NodeMatcher(graph)
 
 
 class GraphReference(Reference):

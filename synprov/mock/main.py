@@ -3,9 +3,9 @@ import logging
 import argparse
 
 from random import randrange
-from py2neo import Graph, Node, NodeMatcher
+from py2neo import Node, NodeMatcher
 
-from synprov.config import neomod
+from synprov.config import neo4j_connection as graph
 from synprov.mock.models.activity import MockActivity
 from synprov.mock.mocker import ActivityMocker
 from synprov.graph.client import GraphClient
@@ -14,7 +14,6 @@ from synprov.graph.client import GraphClient
 logging.basicConfig(format='%(asctime)s | %(levelname)s : %(message)s',
                     level=logging.INFO,
                     stream=sys.stdout)
-graph = Graph(neomod.neo.db.url)
 matcher = NodeMatcher(graph)
 
 # ------------------------------

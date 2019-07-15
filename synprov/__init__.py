@@ -2,12 +2,13 @@ import connexion
 
 from healthcheck import HealthCheck
 
-from synprov import config
+from synprov.config import neo4j_connection
 
 def neo4j_available():
-    if config.neomod.test_connection():
+    try:
+        neo4j_connection.run('MATCH () RETURN 1 LIMIT 1')
         return True, "neo4j ok"
-    else:
+    except AttributeError:
         return False, "neo4j connection not found"
 
 
