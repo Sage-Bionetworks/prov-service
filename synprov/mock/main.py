@@ -11,9 +11,10 @@ from synprov.mock.mocker import ActivityMocker
 from synprov.graph.client import GraphClient
 
 
-logging.basicConfig(format='%(asctime)s | %(levelname)s : %(message)s',
-                    level=logging.INFO,
-                    stream=sys.stdout)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
 matcher = NodeMatcher(graph)
 
 # ------------------------------
@@ -38,11 +39,11 @@ def add_activities(kt):
     return x
 
 
-def create_mock_graph(graph_db, NUMACTIVITIES):
+def create_mock_graph(graph_client, NUMACTIVITIES):
     # SCRIPT
 
     # step 1 - Create activities:
-    logging.info("Generating table of Activities...")
+    logger.info("Generating table of Activities...")
     activity_array = add_activities(NUMACTIVITIES)
 
     # step 2 - Create corresponding nodes and relationships
@@ -50,9 +51,9 @@ def create_mock_graph(graph_db, NUMACTIVITIES):
     ref_num = 0
     agt_num = 0
     for i in activity_array:
-        logging.info("Building Activity '{}' of class '{}'"
+        logger.info("Building Activity '{}' of class '{}'"
                      .format(i.name, i._class))
-        act = ActivityMocker(graph_db, i, ref_num, agt_num)
+        act = ActivityMocker(graph_client, i, ref_num, agt_num)
         (rn, an) = act.save()
         ref_num += rn
         agt_num += an
