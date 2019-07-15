@@ -1,6 +1,9 @@
 # ref: https://docs.travis-ci.com/user/languages/python
 language: python
 
+services:
+  - docker
+
 python:
   - "3.6"
 
@@ -15,6 +18,9 @@ before_install:
   - mkdir -p neo4j-community-$NEO4J_VERSION/data/dbms
   - cp auth neo4j-community-$NEO4J_VERSION/data/dbms/
   - neo4j-community-$NEO4J_VERSION/bin/neo4j start
+  # regenerate model and controller code from OpenAPI spec
+  - docker pull openapitools/openapi-generator-cli
+  - bash .build/codegen.sh
 
 install:
   # command to install dependencies
