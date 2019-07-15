@@ -13,7 +13,6 @@ connex_app = connexion.App(__name__, specification_dir='./openapi/')
 
 env_host = os.environ.get('NEO4J_HOST')
 neo4j_host = env_host if env_host is not None else '0.0.0.0'
-print(neo4j_host)
 
 neo_user = os.environ['NEO4J_USERNAME']
 neo_pass = os.environ['NEO4J_PASSWORD']

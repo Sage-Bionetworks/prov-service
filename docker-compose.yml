@@ -1,23 +1,34 @@
 version: '3.2'
 
 services:
+  neo4j-dev:
+    image: neo4j:latest
+    container_name: neo4j
+    ports:
+      - '7687:7687'
+      - '7474:7474'
+    volumes:
+      - ./data/dbms:/var/lib/data/dbms
+
   prov-server:
     build:
         context: .
         dockerfile: Dockerfile
     image: prov-server
-    command: -m synprov
+    command:
+      - ./wait-for-it.sh
+      - --timeout=20
+      - 127.0.0.1:7687
+      - --
+      - python3
+      - -m
+      - synprov
     container_name: prov-server
     ports:
-        - '8080:8080'
+      - '8080:8080'
     environment:
-        MONGODB_URI: 'mongodb://mongo:27017/provDB'
+        NEO4J_HOST: '127.0.0.1'
+        NEO4J_USERNAME: 'neo4j'
+        NEO4J_PASSWORD: 'password'
     depends_on:
-        - mongo-dev
-
-  mongo-dev:
-    image: mongo
-    command: mongod --port 27017
-    container_name: mongo
-    ports:
-        - '27017:27017'
+      - neo4j-dev
