@@ -5,33 +5,26 @@ services:
     image: neo4j:latest
     container_name: neo4j
     ports:
-      - '7687:7687'
-      - '7474:7474'
-    environment:
-        NEO4J_AUTH: 'neo4j/password'
-    # volumes:
-    #   - ./data/dbms:/var/lib/data/dbms
+      - "7687:7687"
+      - "7474:7474"
+    volumes:
+      - ./data/dbms:/var/lib/neo4j/data/dbms
 
   prov-server:
     build:
         context: .
         dockerfile: Dockerfile
     image: prov-server
-    command:
-      - ./wait-for-it.sh
-      - --timeout=20
-      - neo4j-dev:7687
-      - --
-      - python3
-      - -m
-      - synprov
+    command: python3 -m synprov
     container_name: prov-server
     ports:
-      - '8080:8080'
+      - "8080:8080"
     environment:
-        NEO4J_SCHEME: 'bolt'
-        NEO4J_HOST: 'neo4j-dev'
-        NEO4J_USERNAME: 'neo4j'
-        NEO4J_PASSWORD: 'password'
-    depends_on:
+      - NEO4J_SCHEME=bolt
+      - NEO4J_HOST=neo4j-dev
+      - NEO4J_PORT=7687
+      - NEO4J_USERNAME=neo4j
+      - NEO4J_PASSWORD=password
+      - FLASK_HOST=0.0.0.0
+    links:
       - neo4j-dev
