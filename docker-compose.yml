@@ -7,8 +7,10 @@ services:
     ports:
       - '7687:7687'
       - '7474:7474'
-    volumes:
-      - ./data/dbms:/var/lib/data/dbms
+    environment:
+        NEO4J_AUTH: 'neo4j/password'
+    # volumes:
+    #   - ./data/dbms:/var/lib/data/dbms
 
   prov-server:
     build:
@@ -18,7 +20,7 @@ services:
     command:
       - ./wait-for-it.sh
       - --timeout=20
-      - 127.0.0.1:7687
+      - neo4j-dev:7687
       - --
       - python3
       - -m
@@ -27,7 +29,8 @@ services:
     ports:
       - '8080:8080'
     environment:
-        NEO4J_HOST: '127.0.0.1'
+        NEO4J_SCHEME: 'bolt'
+        NEO4J_HOST: 'neo4j-dev'
         NEO4J_USERNAME: 'neo4j'
         NEO4J_PASSWORD: 'password'
     depends_on:
