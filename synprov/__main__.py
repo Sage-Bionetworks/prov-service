@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import os
 import connexion
 import logging
 
@@ -23,7 +23,9 @@ def main():
     app = create_app()
 
     init_db()
-    app.run(host='localhost', port=8080)
+    env_host = os.environ.get('FLASK_HOST')
+    flask_host = env_host if env_host is not None else 'localhost'
+    app.run(host=flask_host, port=8080)
 
 
 if __name__ == '__main__':
