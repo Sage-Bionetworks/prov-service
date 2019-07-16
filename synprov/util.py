@@ -6,6 +6,8 @@ import pytz
 import datetime
 import six
 import typing
+import socket
+
 
 from datetime import datetime
 
@@ -245,3 +247,13 @@ def _convert_relationship(neo4j_rel):
         'target': str(neo4j_rel.end_node.identity),
         'linknum': 1
     }
+
+
+def is_open(ip, port):
+   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   try:
+      s.connect((ip, int(port)))
+      s.shutdown(2)
+      return True
+   except:
+      return False
