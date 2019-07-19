@@ -9,7 +9,7 @@ from synprov.config import neo4j_connection as graph
 from synprov.graph import GraphActivity, GraphReference, GraphAgent
 
 
-def get_agent_subgraph(id):  # noqa: E501
+def get_agent_subgraph(id, limit=None):  # noqa: E501
     """Get subgraph connected to an agent.
 
     Retrieve all nodes and relationships in the graph that pass filters. # noqa: E501

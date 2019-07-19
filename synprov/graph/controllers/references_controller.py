@@ -9,7 +9,7 @@ from synprov.config import neo4j_connection as graph
 from synprov.graph import GraphActivity, GraphReference, GraphAgent
 
 
-def get_reference_subgraph(id):  # noqa: E501
+def get_reference_subgraph(id, limit=None, direction=None):  # noqa: E501
     """Get subgraph connected to an entity.
 
     Retrieve the nodes and relationships in a neighborhood around a specified entity. # noqa: E501
