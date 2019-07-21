@@ -13,7 +13,7 @@ def create_activity(body):  # noqa: E501
 
     Create a new Activity. If the passed Activity object contains a Used array, you must set the concreteType field of each Used subclass. # noqa: E501
 
-    :param body:
+    :param body: 
     :type body: dict | bytes
 
     :rtype: Activity
@@ -37,4 +37,40 @@ def get_activities_graph(limit=None):  # noqa: E501
     """
     return controller.get_activities_graph(
         limit=limit
+    )
+
+
+def get_agent_subgraph(id, limit=None):  # noqa: E501
+    """Get subgraph connected to an agent
+
+    Retrieve the nodes and relationships in a neighborhood around a specified user.  # noqa: E501
+
+    :param id: user ID
+    :type id: str
+    :param limit: maximum number of nodes to return
+    :type limit: int
+
+    :rtype: D3Graph
+    """
+    return controller.get_agent_subgraph(
+        id=id, limit=limit
+    )
+
+
+def get_reference_subgraph(id, limit=None, direction=None):  # noqa: E501
+    """Get subgraph connected to an entity
+
+    Retrieve the nodes and relationships in a neighborhood around a specified entity.  # noqa: E501
+
+    :param id: entity ID
+    :type id: str
+    :param limit: maximum number of nodes to return
+    :type limit: int
+    :param direction: direction in which to collect nodes
+    :type direction: str
+
+    :rtype: D3Graph
+    """
+    return controller.get_reference_subgraph(
+        id=id, limit=limit, direction=direction
     )
