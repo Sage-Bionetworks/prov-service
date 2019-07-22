@@ -49,18 +49,9 @@ paths:
         Retrieve all nodes and relationships in the graph that pass filters.
       operationId: get_activities_graph
       parameters:
-      - description: maximum number of nodes to return
-        explode: true
-        in: query
-        name: limit
-        required: false
-        schema:
-          default: 20
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        style: form
+      - $ref: '#/components/parameters/sortParam'
+      - $ref: '#/components/parameters/orderParam'
+      - $ref: '#/components/parameters/limitParam'
       responses:
         200:
           content:
@@ -86,18 +77,9 @@ paths:
         schema:
           type: string
         style: simple
-      - description: maximum number of nodes to return
-        explode: true
-        in: query
-        name: limit
-        required: false
-        schema:
-          default: 20
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        style: form
+      - $ref: '#/components/parameters/sortParam'
+      - $ref: '#/components/parameters/orderParam'
+      - $ref: '#/components/parameters/limitParam'
       responses:
         200:
           content:
@@ -123,30 +105,10 @@ paths:
         schema:
           type: string
         style: simple
-      - description: maximum number of nodes to return
-        explode: true
-        in: query
-        name: limit
-        required: false
-        schema:
-          default: 20
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        style: form
-      - description: direction in which to collect nodes
-        explode: true
-        in: query
-        name: direction
-        required: false
-        schema:
-          enum:
-          - up
-          - down
-          - both
-          type: string
-        style: form
+      - $ref: '#/components/parameters/directionParam'
+      - $ref: '#/components/parameters/sortParam'
+      - $ref: '#/components/parameters/orderParam'
+      - $ref: '#/components/parameters/limitParam'
       responses:
         200:
           content:
@@ -161,29 +123,55 @@ paths:
 components:
   parameters:
     limitParam:
-      description: maximum number of nodes to return
+      description: maximum number of connected activities to return
       explode: true
       in: query
       name: limit
       required: false
       schema:
-        default: 20
+        default: 3
         format: int32
         maximum: 100
         minimum: 1
         type: integer
       style: form
     directionParam:
-      description: direction in which to collect nodes
+      description: direction in which to collect connected activities
       explode: true
       in: query
       name: direction
       required: false
       schema:
+        default: down
         enum:
         - up
         - down
         - both
+        type: string
+      style: form
+    sortParam:
+      description: logic by which to sort matched activities
+      explode: true
+      in: query
+      name: sortBy
+      required: false
+      schema:
+        default: created_at
+        enum:
+        - created_at
+        type: string
+      style: form
+    orderParam:
+      description: sort order (ascending or descending)
+      explode: true
+      in: query
+      name: order
+      required: false
+      schema:
+        default: desc
+        enum:
+        - asc
+        - desc
         type: string
       style: form
   responses:
