@@ -10,7 +10,10 @@ from {{packageName}}.graph.controllers import {{classFilename}} as controller
 {{#operation}}
 
 
-def {{operationId}}({{#allParams}}{{paramName}}{{^required}}=None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}):  # noqa: E501
+def {{operationId}}(
+    {{#allParams}}{{paramName}}{{^required}}{{#defaultValue}}={{{defaultValue}}}{{/defaultValue}}{{/required}}{{#hasMore}},
+    {{/hasMore}}{{/allParams}}
+):  # noqa: E501
     """{{#summary}}{{.}}{{/summary}}{{^summary}}{{operationId}}{{/summary}}
 
     {{#notes}}{{.}}{{/notes}} # noqa: E501
@@ -110,7 +113,8 @@ def {{operationId}}({{#allParams}}{{paramName}}{{^required}}=None{{/required}}{{
         {{/isMapContainer}}
     {{/allParams}}
     return controller.{{operationId}}(
-        {{#allParams}}{{paramName}}={{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}
+        {{#allParams}}{{paramName}}={{paramName}}{{#hasMore}},
+        {{/hasMore}}{{/allParams}}
     )
 {{/operation}}
 {{/operations}}
