@@ -28,24 +28,126 @@ def create_activity(body=None):  # noqa: E501
     return 'Not Implemented', 501
 
 
-def get_activities_graph(limit=20):  # noqa: E501
+def get_activities_graph(sort_by=None, order=None, limit=None):  # noqa: E501
     """Get provenance graph
 
     Retrieve all nodes and relationships in the graph that pass filters.  # noqa: E501
 
-    :param limit: maximum number of nodes to return
+    :param sort_by: logic by which to sort matched activities
+    :type sort_by: str
+    :param order: sort order (ascending or descending)
+    :type order: str
+    :param limit: maximum number of connected activities to return
     :type limit: int
 
     :rtype: D3Graph
     """
-    # TODO: with the current query, the 'limit' parameter applies
-    # to relationships, not really to nodes
-    results = graph.run(
+    query_base = (
         '''
+        MATCH (s:Activity)
+        WITH s
+        ORDER BY s.{key}{dir}
+        WITH collect(s) as activities
+        UNWIND activities[0..{lim}] as t
         MATCH (s)-[r]-(t)
         RETURN s as source, r as relationship, t as target
-        LIMIT {limit}
-        ''',
-        limit=limit
+        '''
+    ).format(
+        key=sort_by,
+        dir=(' ' + order.upper()) if order == 'desc' else '',
+        lim=limit
+    )
+
+    results = graph.run(
+        query_base,
+    )
+    return neo4j_to_d3(results.data())
+
+
+def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
+    """Get subgraph connected to an agent
+
+    Retrieve the nodes and relationships in a neighborhood around a specified user.  # noqa: E501
+
+    :param id: user ID
+    :type id: str
+    :param sort_by: logic by which to sort matched activities
+    :type sort_by: str
+    :param order: sort order (ascending or descending)
+    :type order: str
+    :param limit: maximum number of connected activities to return
+    :type limit: int
+
+    :rtype: D3Graph
+    """
+    query_base = (
+        '''
+        MATCH (t:Agent {{user_id: {{id}}}})<-[r:WASASSOCIATEDWITH]-(s:Activity)
+        WITH s
+        ORDER BY s.{key}{dir}
+        WITH collect(s) as activities
+        UNWIND activities[0..{lim}] as t
+        MATCH (s)-[r]-(t)
+        RETURN s as source, r as relationship, t as target
+        '''
+    ).format(
+        key=sort_by,
+        dir=(' ' + order.upper()) if order == 'desc' else '',
+        lim=limit
+    )
+
+    results = graph.run(
+        query_base,
+        id=id
+    )
+    return neo4j_to_d3(results.data())
+
+
+def get_reference_subgraph(id,
+                           direction='down',
+                           sort_by='created_at',
+                           order='desc',
+                           limit=3):  # noqa: E501
+    """Get subgraph connected to an entity
+
+    Retrieve the nodes and relationships in a neighborhood around a specified entity.  # noqa: E501
+
+    :param id: entity ID
+    :type id: str
+    :param direction: direction in which to collect connected activities
+    :type direction: str
+    :param sort_by: logic by which to sort matched activities
+    :type sort_by: str
+    :param order: sort order (ascending or descending)
+    :type order: str
+    :param limit: maximum number of connected activities to return
+    :type limit: int
+
+    :rtype: D3Graph
+    """
+    direction_rels = {
+        'up': '-[r:WASGENERATEDBY]->',
+        'down': '<-[r:USED]-'
+    }
+    query_base = (
+        '''
+        MATCH (t:Reference {{target_id: {{id}}}}){dir_rel}(s:Activity)
+        WITH s
+        ORDER BY s.{key}{dir}
+        WITH collect(s) as activities
+        UNWIND activities[0..{lim}] as t
+        MATCH (s)-[r]-(t)
+        RETURN s as source, r as relationship, t as target
+        '''
+    ).format(
+        dir_rel=direction_rels[direction],
+        key=sort_by,
+        dir=(' ' + order.upper()) if order == 'desc' else '',
+        lim=limit
+    )
+
+    results = graph.run(
+        query_base,
+        id=id
     )
     return neo4j_to_d3(results.data())

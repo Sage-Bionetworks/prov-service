@@ -184,8 +184,10 @@ def neo4j_to_d3(results):
     return {"nodes": nodes, "links": rels}
 
 
-def get_datetime():
-    _date_obj = iso8601.parse_date(datetime.now().isoformat())
+def get_datetime(now=None):
+    if now is None:
+        now = datetime.now()
+    _date_obj = iso8601.parse_date(now.isoformat())
     _date_utc = _date_obj.astimezone(pytz.utc)
     return _date_utc.strftime('%Y-%m-%dT%H:%M:%SZ')
 
