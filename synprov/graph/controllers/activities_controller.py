@@ -42,15 +42,24 @@ def get_activities_graph(sort_by=None, order=None, limit=None):  # noqa: E501
 
     :rtype: D3Graph
     """
-    # TODO: with the current query, the 'limit' parameter applies
-    # to relationships, not really to nodes
-    results = graph.run(
+    query_base = (
         '''
+        MATCH (s:Activity)
+        WITH s
+        ORDER BY s.{key}{dir}
+        WITH collect(s) as activities
+        UNWIND activities[0..{lim}] as t
         MATCH (s)-[r]-(t)
         RETURN s as source, r as relationship, t as target
-        LIMIT {limit}
-        ''',
-        limit=limit
+        '''
+    ).format(
+        key=sort_by,
+        dir=(' ' + order.upper()) if order == 'desc' else '',
+        lim=limit
+    )
+
+    results = graph.run(
+        query_base,
     )
     return neo4j_to_d3(results.data())
 
@@ -79,7 +88,7 @@ def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
         WITH collect(s) as activities
         UNWIND activities[0..{lim}] as t
         MATCH (s)-[r]-(t)
-        RETURN s as source,r as relationship,t as target
+        RETURN s as source, r as relationship, t as target
         '''
     ).format(
         key=sort_by,
@@ -128,7 +137,7 @@ def get_reference_subgraph(id,
         WITH collect(s) as activities
         UNWIND activities[0..{lim}] as t
         MATCH (s)-[r]-(t)
-        RETURN s as source,r as relationship,t as target
+        RETURN s as source, r as relationship, t as target
         '''
     ).format(
         dir_rel=direction_rels[direction],
@@ -136,7 +145,6 @@ def get_reference_subgraph(id,
         dir=(' ' + order.upper()) if order == 'desc' else '',
         lim=limit
     )
-    print(query_base)
 
     results = graph.run(
         query_base,

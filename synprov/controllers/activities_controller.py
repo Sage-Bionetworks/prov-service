@@ -15,7 +15,7 @@ def create_activity(
 
     Create a new Activity. If the passed Activity object contains a Used array, you must set the concreteType field of each Used subclass. # noqa: E501
 
-    :param body: 
+    :param body:
     :type body: dict | bytes
 
     :rtype: Activity
@@ -112,3 +112,4 @@ def get_reference_subgraph(
         order=order,
         limit=limit
     )
+
