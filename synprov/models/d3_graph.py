@@ -6,6 +6,8 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from synprov.models.base_model_ import Model
+from synprov.models.d3_link import D3Link
+from synprov.models.d3_node import D3Node
 from synprov import util
 
 
@@ -19,13 +21,13 @@ class D3Graph(Model):
         """D3Graph - a model defined in OpenAPI
 
         :param nodes: The nodes of this D3Graph.  # noqa: E501
-        :type nodes: List[object]
+        :type nodes: List[D3Node]
         :param relationships: The relationships of this D3Graph.  # noqa: E501
-        :type relationships: List[object]
+        :type relationships: List[D3Link]
         """
         self.openapi_types = {
-            'nodes': List[object],
-            'relationships': List[object]
+            'nodes': List[D3Node],
+            'relationships': List[D3Link]
         }
 
         self.attribute_map = {
@@ -53,7 +55,7 @@ class D3Graph(Model):
 
 
         :return: The nodes of this D3Graph.
-        :rtype: List[object]
+        :rtype: List[D3Node]
         """
         return self._nodes
 
@@ -63,7 +65,7 @@ class D3Graph(Model):
 
 
         :param nodes: The nodes of this D3Graph.
-        :type nodes: List[object]
+        :type nodes: List[D3Node]
         """
 
         self._nodes = nodes
@@ -74,7 +76,7 @@ class D3Graph(Model):
 
 
         :return: The relationships of this D3Graph.
-        :rtype: List[object]
+        :rtype: List[D3Link]
         """
         return self._relationships
 
@@ -84,7 +86,7 @@ class D3Graph(Model):
 
 
         :param relationships: The relationships of this D3Graph.
-        :type relationships: List[object]
+        :type relationships: List[D3Link]
         """
 
         self._relationships = relationships

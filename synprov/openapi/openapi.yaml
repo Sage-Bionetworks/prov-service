@@ -124,7 +124,7 @@ components:
   parameters:
     limitParam:
       description: maximum number of connected activities to return
-      explode: true
+      explode: false
       in: query
       name: limit
       required: false
@@ -137,7 +137,7 @@ components:
       style: form
     directionParam:
       description: direction in which to collect connected activities
-      explode: true
+      explode: false
       in: query
       name: direction
       required: false
@@ -151,7 +151,7 @@ components:
       style: form
     sortParam:
       description: logic by which to sort matched activities
-      explode: true
+      explode: false
       in: query
       name: sortBy
       required: false
