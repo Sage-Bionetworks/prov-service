@@ -7,8 +7,6 @@ from synprov.models.activity import Activity
 from synprov.models.activity_form import ActivityForm
 from synprov.models.agent import Agent
 from synprov.models.d3_graph import D3Graph
-from synprov.models.d3_link import D3Link
-from synprov.models.d3_node import D3Node
 from synprov.models.prov_node import ProvNode
 from synprov.models.prov_relationship import ProvRelationship
 from synprov.models.reference import Reference

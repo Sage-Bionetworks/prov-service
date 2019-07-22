@@ -308,15 +308,48 @@ components:
       properties:
         nodes:
           items:
-            $ref: '#/components/schemas/D3Node'
+            $ref: '#/components/schemas/Node'
           type: array
         relationships:
           items:
-            $ref: '#/components/schemas/D3Link'
+            $ref: '#/components/schemas/Edge'
           type: array
       title: D3Graph
       type: object
-    D3Node:
+    NeoGraph:
+      type: object
+      title: NeoGraph
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              columns:
+                type: array
+                items:
+                  type: string
+                default:
+                - Activity
+                - Reference
+                - Agent
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    graph:
+                      type: object
+                      properties:
+                        nodes:
+                          items:
+                            $ref: '#/components/schemas/Node'
+                          type: array
+                        relationships:
+                          items:
+                            $ref: '#/components/schemas/Edge'
+                          type: array
+    Node:
       properties:
         id:
           type: string
@@ -326,9 +359,9 @@ components:
           type: array
         properties:
           type: object
-      title: D3Node
+      title: Node
       type: object
-    D3Link:
+    Edge:
       properties:
         id:
           type: string
@@ -347,5 +380,5 @@ components:
         linknum:
           format: int32
           type: integer
-      title: D3Relationship
+      title: Edge
       type: object
