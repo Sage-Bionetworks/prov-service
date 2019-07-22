@@ -1,4 +1,5 @@
 import sys
+import time
 import logging
 import argparse
 
@@ -36,6 +37,7 @@ def add_activities(kt):
                            class_idx=0)
         tmp.select_class(randrange(tmp.get_class_count()))
         x.append(tmp)
+        time.sleep(1)
     return x
 
 
