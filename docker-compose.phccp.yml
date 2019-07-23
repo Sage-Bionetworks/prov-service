@@ -1,9 +1,9 @@
 version: '3.2'
 
 services:
-  neo4j-dev:
-    image: neo4j:latest
-    container_name: neo4j
+  phccp-neo4j:
+    image: docker.synapse.org/syn18489221/phccp-neo4j
+    container_name: phccp-neo4j
     ports:
       - "7687:7687"
       - "7474:7474"
@@ -12,23 +12,22 @@ services:
     volumes:
       - /tmp/neo4j/data:/var/lib/neo4j/data
       - /tmp/neo4j/logs:/logs
-      # - ./data/dbms:/var/lib/neo4j/data/dbms
 
-  prov-server:
+  phccp-prov:
     build:
         context: .
         dockerfile: Dockerfile
-    image: prov-server
-    command: python3 -m synprov --mock_db --db_size 30
-    container_name: prov-server
+    image: phccp-prov
+    command: python3 -m synprov
+    container_name: phccp-prov
     ports:
       - "8080:8080"
     environment:
       NEO4J_SCHEME: bolt
-      NEO4J_HOST: neo4j-dev
+      NEO4J_HOST: phccp-neo4j
       NEO4J_PORT: 7687
       NEO4J_USERNAME: ${NEO4J_USERNAME}
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
       FLASK_HOST: "0.0.0.0"
     links:
-      - neo4j-dev
+      - phccp-neo4j
