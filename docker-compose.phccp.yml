@@ -14,10 +14,7 @@ services:
       - /tmp/neo4j/logs:/logs
 
   phccp-prov:
-    build:
-        context: .
-        dockerfile: Dockerfile
-    image: phccp-prov
+    image: docker.synapse.org/syn18489221/prov-service:develop
     command: python3 -m synprov
     container_name: phccp-prov
     ports:
