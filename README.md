@@ -39,6 +39,27 @@ To start the app, you can use this command:
 synprov
 ```
 
+To initialize the graph database with mock activity records, you can run the app with additional parameters:
+```shell
+synprov --mock_db --db_size 30
+```
+
+To view the full set of parameters:
+```shell
+synprov --help
+```
+
+```shell
+Usage: synprov [OPTIONS]
+
+Options:
+  --mock_db          Initialize Neo4j database with mock graph records
+                     [default: False]
+  --db_size INTEGER  Number of mock activity records to create in the graph
+                     database (ignored if 'init_db' is False).  [default: 50]
+  --help             Show this message and exit.
+```
+
 ### Neo4j browser
 
 If you have the **Neo4j Desktop** application installed, you should be able to view and explore the graph database using Cypher queries. For example, to view all nodes and relationships:
@@ -46,6 +67,8 @@ If you have the **Neo4j Desktop** application installed, you should be able to v
 ```cypher
 MATCH (n) RETURN n
 ```
+
+Assuming that you populated the graph database with mock/example records as described above, you should see something that looks like this (minus the custom colors):
 
 ![example provenance graph](img/mockprov.png)
 
