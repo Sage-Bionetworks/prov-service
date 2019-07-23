@@ -92,13 +92,7 @@ http://localhost:8080/rest/openapi.json
 
 ## Running with Docker
 
-To run the server on a Docker container, first store the username and password from your environment as a file under `data/dbms`:
-
-```shell
-bash .build/build_auth_string.sh ${NEO4J_USERNAME}:${NEO4J_PASSWORD} > data/dbms/auth
-```
-
-Then execute the following from the root directory:
+To run the server on a Docker container, execute the following from the root directory:
 
 ```shell
 docker-compose up --build
