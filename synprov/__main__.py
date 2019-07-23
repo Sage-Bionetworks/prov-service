@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import os
-import connexion
 import logging
+
+import connexion
+import click
 
 from synprov import create_app
 from synprov.config import neo4j_connection as graph
@@ -19,10 +21,26 @@ def init_db(num_activities=30):
     create_mock_graph(GraphClient(graph), num_activities)
 
 
-def main():
+@click.command()
+@click.option(
+    '--mock_db',
+    flag_value=True,
+    show_default=True,
+    help=("Initialize Neo4j database with mock graph records")
+)
+@click.option(
+    '--db_size',
+    default=50,
+    show_default=True,
+    help=("Number of mock activity records to create in the "
+          "graph database (ignored if 'init_db' is False).")
+)
+def main(mock_db, db_size):
     app = create_app()
 
-    init_db()
+    if mock_db:
+        init_db(db_size)
+
     env_host = os.environ.get('FLASK_HOST')
     flask_host = env_host if env_host is not None else 'localhost'
     app.run(host=flask_host, port=8080)

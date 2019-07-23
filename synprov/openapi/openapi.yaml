@@ -76,6 +76,7 @@ paths:
         required: true
         schema:
           type: string
+        example: UserID_1
         style: simple
       - $ref: '#/components/parameters/sortParam'
       - $ref: '#/components/parameters/orderParam'
@@ -104,6 +105,7 @@ paths:
         required: true
         schema:
           type: string
+        example: TargetID_1
         style: simple
       - $ref: '#/components/parameters/directionParam'
       - $ref: '#/components/parameters/sortParam'
@@ -131,7 +133,7 @@ components:
       schema:
         default: 3
         format: int32
-        maximum: 100
+        maximum: 1000
         minimum: 1
         type: integer
       style: form
