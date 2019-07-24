@@ -8,9 +8,6 @@ import six
 import typing
 import socket
 
-
-from datetime import datetime
-
 from functools import wraps
 from hashlib import sha256
 
@@ -174,19 +171,9 @@ def _convert_keys(obj):
         return obj
 
 
-def neo4j_to_d3(results):
-    nodes = []
-    rels = []
-    for record in results:
-        nodes.append(_convert_node(record['source']))
-        nodes.append(_convert_node(record['target']))
-        rels.append(_convert_relationship(record['relationship']))
-    return {"nodes": nodes, "links": rels}
-
-
 def get_datetime(now=None):
     if now is None:
-        now = datetime.now()
+        now = datetime.datetime.now()
     _date_obj = iso8601.parse_date(now.isoformat())
     _date_utc = _date_obj.astimezone(pytz.utc)
     return _date_utc.strftime('%Y-%m-%dT%H:%M:%SZ')

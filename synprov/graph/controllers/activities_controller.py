@@ -7,7 +7,7 @@ import json
 from py2neo import Node, NodeMatcher
 
 from synprov.config import neo4j_connection as graph
-from synprov.graph import GraphActivity, GraphReference, GraphAgent
+from synprov.graph import ActivityBuilder
 from synprov.util import neo4j_to_d3
 
 
@@ -21,11 +21,16 @@ def create_activity(body=None):  # noqa: E501
 
     :rtype: Activity
     """
-    # act = Activity(**humps.decamelize(body))
-    # act.save()
-
-    # return act.node
-    return 'Not Implemented', 501
+    builder = ActivityBuilder(
+        **body.to_dict()
+    )
+    act_node = builder.save()
+    print(act_node)
+    return humps.camelize({
+        'id': str(act_node.identity),
+        'labels': list(act_node.labels),
+        'properties': dict(act_node)
+    })
 
 
 def get_activities_graph(sort_by=None, order=None, limit=None):  # noqa: E501
@@ -61,7 +66,7 @@ def get_activities_graph(sort_by=None, order=None, limit=None):  # noqa: E501
     results = graph.run(
         query_base,
     )
-    return neo4j_to_d3(results.data())
+    return humps.camelize(neo4j_to_d3(results.data()))
 
 
 def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
@@ -100,7 +105,7 @@ def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
         query_base,
         id=id
     )
-    return neo4j_to_d3(results.data())
+    return humps.camelize(neo4j_to_d3(results.data()))
 
 
 def get_reference_subgraph(id,
@@ -150,4 +155,4 @@ def get_reference_subgraph(id,
         query_base,
         id=id
     )
-    return neo4j_to_d3(results.data())
+    return humps.camelize(neo4j_to_d3(results.data()))
