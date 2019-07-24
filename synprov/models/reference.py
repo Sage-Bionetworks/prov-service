@@ -7,6 +7,7 @@ from typing import List, Dict  # noqa: F401
 
 from synprov.models.base_model_ import Model
 from synprov.models.prov_node import ProvNode
+from synprov.models.reference1 import Reference1
 from synprov import util
 
 

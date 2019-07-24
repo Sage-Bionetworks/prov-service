@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from synprov.models.base_model_ import Model
+from synprov.models.agent1 import Agent1
 from synprov.models.prov_node import ProvNode
 from synprov import util
 

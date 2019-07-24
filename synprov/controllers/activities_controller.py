@@ -1,9 +1,9 @@
 import connexion
 import six
 
-from synprov.models import Activity  # noqa: E501
 from synprov.models import ActivityForm  # noqa: E501
-from synprov.models import D3Graph  # noqa: E501
+from synprov.models import Neo4jGraph  # noqa: E501
+from synprov.models import Node  # noqa: E501
 from synprov import util
 from synprov.graph.controllers import activities_controller as controller
 
@@ -18,7 +18,7 @@ def create_activity(
     :param body: 
     :type body: dict | bytes
 
-    :rtype: Activity
+    :rtype: Node
     """
     if connexion.request.is_json:
         body = ActivityForm.from_dict(connexion.request.get_json())  # noqa: E501
@@ -43,7 +43,7 @@ def get_activities_graph(
     :param limit: maximum number of connected activities to return
     :type limit: int
 
-    :rtype: D3Graph
+    :rtype: Neo4jGraph
     """
     return controller.get_activities_graph(
         sort_by=sort_by,
@@ -71,7 +71,7 @@ def get_agent_subgraph(
     :param limit: maximum number of connected activities to return
     :type limit: int
 
-    :rtype: D3Graph
+    :rtype: Neo4jGraph
     """
     return controller.get_agent_subgraph(
         id=id,
@@ -103,7 +103,7 @@ def get_reference_subgraph(
     :param limit: maximum number of connected activities to return
     :type limit: int
 
-    :rtype: D3Graph
+    :rtype: Neo4jGraph
     """
     return controller.get_reference_subgraph(
         id=id,
