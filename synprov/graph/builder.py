@@ -105,4 +105,4 @@ class ActivityBuilder(ActivityForm):
                 rel.create()
                 self.gdb.create_relationship(rel)
 
-        return True
+        return self._find_activity()
