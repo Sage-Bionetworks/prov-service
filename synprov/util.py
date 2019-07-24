@@ -148,7 +148,8 @@ def _deserialize_dict(data, boxed_type):
     return {k: _deserialize(v, boxed_type)
             for k, v in six.iteritems(data)}
 
-def _convert_keys(obj):
+
+def convert_keys(obj):
     """
     Convert keys in a dictionary (or nested dictionary) from snake_case
     to camelCase; ignore '_id' keys.
@@ -161,11 +162,11 @@ def _convert_keys(obj):
     :rtype: dict, list
     """
     if isinstance(obj, list):
-        return [_convert_keys(i) for i in obj]
+        return [convert_keys(i) for i in obj]
     elif isinstance(obj, dict):
         return {(humps.camelize(k.lstrip('_'))
                  if not re.search('^_id', k)
-                 else k): _convert_keys(obj[k])
+                 else k): convert_keys(obj[k])
                 for k in obj}
     else:
         return obj
