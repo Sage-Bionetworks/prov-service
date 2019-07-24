@@ -7,9 +7,6 @@ services:
 python:
   - "3.6"
 
-env:
-  - NEO4J_VERSION="3.4.1" NEO4J_USERNAME="neo4j_test" NEO4J_PASSWORD="testpass"
-
 before_install:
   # install Neo4j locally:
   - wget dist.neo4j.org/neo4j-community-$NEO4J_VERSION-unix.tar.gz
