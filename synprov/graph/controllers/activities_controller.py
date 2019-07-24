@@ -8,7 +8,7 @@ from py2neo import Node, NodeMatcher
 
 from synprov.config import neo4j_connection as graph
 from synprov.graph import ActivityBuilder
-from synprov.util import neo4j_to_d3, convert_keys
+from synprov.util import neo4j_to_d3, neo4j_export, convert_keys
 
 
 def create_activity(body=None):  # noqa: E501
@@ -45,7 +45,7 @@ def get_activities_graph(sort_by=None, order=None, limit=None):  # noqa: E501
     :param limit: maximum number of connected activities to return
     :type limit: int
 
-    :rtype: D3Graph
+    :rtype: Neo4jGraph
     """
     query_base = (
         '''
@@ -66,7 +66,7 @@ def get_activities_graph(sort_by=None, order=None, limit=None):  # noqa: E501
     results = graph.run(
         query_base,
     )
-    return convert_keys(neo4j_to_d3(results.data()))
+    return convert_keys(neo4j_export(results.data()))
 
 
 def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
@@ -83,7 +83,7 @@ def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
     :param limit: maximum number of connected activities to return
     :type limit: int
 
-    :rtype: D3Graph
+    :rtype: Neo4jGraph
     """
     query_base = (
         '''
@@ -105,7 +105,7 @@ def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
         query_base,
         id=id
     )
-    return convert_keys(neo4j_to_d3(results.data()))
+    return convert_keys(neo4j_export(results.data()))
 
 
 def get_reference_subgraph(id,
@@ -128,7 +128,7 @@ def get_reference_subgraph(id,
     :param limit: maximum number of connected activities to return
     :type limit: int
 
-    :rtype: D3Graph
+    :rtype: Neo4jGraph
     """
     direction_rels = {
         'up': '-[r:WASGENERATEDBY]->',
@@ -155,4 +155,4 @@ def get_reference_subgraph(id,
         query_base,
         id=id
     )
-    return convert_keys(neo4j_to_d3(results.data()))
+    return convert_keys(neo4j_export(results.data()))
