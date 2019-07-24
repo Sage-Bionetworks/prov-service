@@ -36,7 +36,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Activity'
+                $ref: '#/components/schemas/Node'
           description: Success — activity created
       summary: Create a new activity
       tags:
@@ -54,11 +54,7 @@ paths:
       - $ref: '#/components/parameters/limitParam'
       responses:
         200:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/D3Graph'
-          description: OK
+          $ref: '#/components/responses/200GraphFound'
       summary: Get provenance graph
       tags:
       - Activities
@@ -83,11 +79,7 @@ paths:
       - $ref: '#/components/parameters/limitParam'
       responses:
         200:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/D3Graph'
-          description: OK
+          $ref: '#/components/responses/200GraphFound'
       summary: Get subgraph connected to an agent
       tags:
       - Activities
@@ -113,17 +105,37 @@ paths:
       - $ref: '#/components/parameters/limitParam'
       responses:
         200:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/D3Graph'
-          description: OK
+          $ref: '#/components/responses/200GraphFound'
       summary: Get subgraph connected to an entity
       tags:
       - Activities
       x-openapi-router-controller: synprov.controllers.activities_controller
 components:
+  responses:
+    200GraphFound:
+      description: Found requested (sub)graph.
+      content:
+        application/json:
+          schema:
+            # oneOf:
+            #   - $ref: '#/components/schemas/D3Graph'
+            $ref: '#/components/schemas/Neo4jGraph'
+    404NotFound:
+      description: The specified resource was not found.
   parameters:
+    formatParam:
+      description: JSON structure to use for graph response
+      explode: false
+      in: query
+      name: format
+      required: false
+      schema:
+        default: d3
+        enum:
+        - d3
+        - neo4j
+        type: string
+      style: form
     limitParam:
       description: maximum number of connected activities to return
       explode: false
@@ -176,9 +188,6 @@ components:
         - desc
         type: string
       style: form
-  responses:
-    404NotFound:
-      description: The specified resource was not found.
   schemas:
     ProvNode:
       properties:
@@ -318,9 +327,9 @@ components:
           type: array
       title: D3Graph
       type: object
-    NeoGraph:
+    Neo4jGraph:
       type: object
-      title: NeoGraph
+      title: Neo4jGraph
       properties:
         results:
           type: array
