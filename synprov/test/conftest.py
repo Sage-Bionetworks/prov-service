@@ -36,7 +36,7 @@ def mock_graph():
 def mock_graph_data(mock_graph):
     logger.info("setup: populating graph database")
     graph = mock_graph
-    random.seed(0)
+    random.seed(1)
     gc = GraphClient(graph)
     create_mock_graph(gc, 5)
     yield graph
@@ -46,24 +46,24 @@ def mock_graph_data(mock_graph):
 def mock_activity_form():
     used = [
         {
-            'name': 'Reference_5',
-            'target_id': 'TargetID_5',
+            'name': 'Reference_3',
+            'target_id': 'TargetID_3',
             'target_version_id': '1.0',
             '_class': 'Resource',
             'subclass': 'File'
+        },
+        {
+            'name': 'Reference_4',
+            'target_id': 'TargetID_4',
+            'target_version_id': '1.0',
+            '_class': 'Tool',
+            'subclass': 'Tool'
         }
-        # {
-        #     'name': 'Reference_5',
-        #     'target_id': 'TargetID_5',
-        #     'target_version_id': '1.0',
-        #     '_class': 'Tool',
-        #     'subclass': 'Tool'
-        # }
     ]
     generated = [
         {
-            'name': 'Reference_6',
-            'target_id': 'TargetID_6',
+            'name': 'Reference_5',
+            'target_id': 'TargetID_5',
             'target_version_id': '1.0',
             '_class': 'Resource',
             'subclass': 'State'
@@ -71,12 +71,12 @@ def mock_activity_form():
     ]
     agents = [
         {
-            'name': 'User_2',
-            'user_id': 'UserID_2'
+            'name': 'User_1',
+            'user_id': 'UserID_1'
         }
     ]
     form = {
-        'name': 'Activity_3',
+        'name': 'Activity_2',
         '_class': 'Tool session',
         'agents': agents,
         'description': '',
@@ -86,3 +86,46 @@ def mock_activity_form():
     }
     yield form
 
+@pytest.fixture(scope='function')
+def mock_activity_request():
+    used = [
+        {
+            'name': 'Reference_3',
+            'targetId': 'TargetID_3',
+            'targetVersionId': '1.0',
+            'class': 'Resource',
+            'subclass': 'File'
+        },
+        {
+            'name': 'Reference_4',
+            'target_id': 'TargetID_4',
+            'target_version_id': '1.0',
+            '_class': 'Tool',
+            'subclass': 'Tool'
+        }
+    ]
+    generated = [
+        {
+            'name': 'Reference_5',
+            'targetId': 'TargetID_5',
+            'targetVersionId': '1.0',
+            'class': 'Resource',
+            'subclass': 'State'
+        }
+    ]
+    agents = [
+        {
+            'name': 'User_1',
+            'userId': 'UserID_1'
+        }
+    ]
+    form = {
+        'name': 'Activity_3',
+        'class': 'Tool session',
+        'agents': agents,
+        'description': '',
+        'used': used,
+        'generated': generated
+
+    }
+    yield form
