@@ -1,5 +1,5 @@
 # Provenance Service
-[![Build Status](https://travis-ci.com/Sage-Bionetworks/prov-service.svg?branch=master)](https://travis-ci.com/Sage-Bionetworks/prov-service) [![Coverage Status](https://coveralls.io/repos/github/Sage-Bionetworks/prov-service/badge.svg?branch=master&service=github)](https://coveralls.io/github/Sage-Bionetworks/prov-service?branch=master&service=github)
+<sup>`develop` branch status: </sup>[![Build Status](https://travis-ci.com/Sage-Bionetworks/prov-service.svg?branch=master)](https://travis-ci.com/Sage-Bionetworks/prov-service) [![Coverage Status](https://coveralls.io/repos/github/Sage-Bionetworks/prov-service/badge.svg?branch=master&service=github)](https://coveralls.io/github/Sage-Bionetworks/prov-service?branch=master&service=github)
 
 Lightweight implementation of the Synapse Activity services, based on the PROV spec.
 
@@ -17,13 +17,19 @@ npx openapi-generator generate -i swagger.yaml -g python-flask -DpackageName=syn
 
 Python 3.6
 
-You should have access to a local installation of Neo4j, serving at `bolt://localhost/7687`.
+You should have access to a local installation of Neo4j, serving at `bolt://localhost/7687`<sup>*</sup>.
 
 You'll also need to set two environment variables based on your Neo4j configuration (the Flask app uses these to connect to the database):
 
 ```shell
-export NEO4J_USERNAME=<username>
+export NEO4J_USERNAME=<username> # must be 'neo4j'
 export NEO4J_PASSWORD=<password>
+```
+
+</sup>*</sup>In some cases, the **Neo4j Desktop** app decides to serve the database on port `11001` instead of `7687`. If this happens, you can set an additional environment variable:
+
+```shell
+export NEO4J_PORT=11001
 ```
 
 ## Usage
@@ -79,6 +85,11 @@ You can also interact with the graph database through RESTful API queries. The s
 
 ```
 http://localhost:8080/rest/ui/
+```
+
+*If the above URL doesn't work, try this instead:*
+```
+http://0.0.0.0:8080/rest/ui/
 ```
 
 ![provenance swagger ui](img/swaggerui.png)
