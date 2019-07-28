@@ -15,7 +15,7 @@ npx openapi-generator generate -i swagger.yaml -g python-flask -DpackageName=syn
 
 ## Requirements
 
-Python 3.5.2+
+Python 3.6
 
 You should have access to a local installation of Neo4j, serving at `bolt://localhost/7687`<sup>*</sup>.
 
