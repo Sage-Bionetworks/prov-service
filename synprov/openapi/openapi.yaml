@@ -36,7 +36,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Node'
-          description: Success — activity created
+          description: Success — activity created
       summary: Create a new activity
       tags:
       - Activities
@@ -61,7 +61,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Node'
-          description: Success — activity created
+          description: Success — activity created
       summary: Create multiple new activities
       tags:
       - Activities
