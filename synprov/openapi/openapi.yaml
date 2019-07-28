@@ -3,7 +3,7 @@ info:
   description: |
     This service provides a lightweight implementation of the [Synapse Activity services](https://docs.synapse.org/rest/#org.sagebionetworks.repo.web.controller.ActivityController), based on the [W3C PROV](https://www.w3.org/TR/prov-primer/) spec. It is designed to be mostly agnostic to the underlying data model or schema of any particular system, and thus relatively flexible for use by different clients.
   title: Provenance Service
-  version: 0.3.0
+  version: 0.4.0
 servers:
 - url: /rest/v1
 tags:
@@ -135,6 +135,122 @@ paths:
       - Activities
       x-openapi-router-controller: synprov.controllers.activities_controller
 components:
+  examples:
+    activityNode:
+      value:
+        id: '149'
+        labels:
+        - Activity
+        properties:
+          createdAt: '2019-07-28T11:39:54Z'
+          id: 17437146-b167-11e9-9ab3-4c32759a3015
+          name: Shiny App PCA
+    referenceStateNode:
+      value:
+        id: '152'
+        labels:
+        - Reference
+        properties:
+          class: Resource
+          createdAt: '2019-07-28T11:39:54Z'
+          id: 174bc6be-b167-11e9-9ef2-4c32759a3015
+          name: PCA on TCGA breast cancer dataset
+          subclass: State
+          targetId: state0
+          targetVersionId: '1'
+    referenceFileNode:
+      value:
+        id: '151'
+        labels:
+        - Reference
+        properties:
+          class: Resource
+          createdAt: '2019-07-28T11:39:54Z'
+          id: 174b77d8-b167-11e9-ac4c-4c32759a3015
+          name: TCGA BRCA Expression
+          subclass: File
+          targetId: resource0
+          targetVersionId: '1'
+    referenceToolNode:
+      value:
+        id: '150'
+        labels:
+        - Reference
+        properties:
+          class: Tool
+          createdAt: '2019-07-28T11:39:54Z'
+          id: 1749ddfe-b167-11e9-8cdc-4c32759a3015
+          name: Explorer
+          subclass: Tool
+          targetId: tool0
+          targetVersionId: '1'
+    agentNode:
+      value:
+        id: '153'
+        labels:
+        - Agent
+        properties:
+          createdAt: '2019-07-28T11:39:54Z'
+          id: 174c1134-b167-11e9-96de-4c32759a3015
+          name: Sage Scientist
+          userId: user0
+    generatedEdge:
+      value:
+        endNode: '149'
+        id: '161'
+        linknum: 1
+        properties:
+          endNodeRole: None
+          id: 17545718-b167-11e9-8db4-4c32759a3015
+          startNodeRole: state
+        source: '152'
+        startNode: '152'
+        target: '149'
+        type:
+        - WASGENERATEDBY
+    associatedEdge:
+      value:
+        endNode: '153'
+        id: '160'
+        linknum: 1
+        properties:
+          endNodeRole: None
+          id: 17527d42-b167-11e9-bd5a-4c32759a3015
+          startNodeRole: None
+        source: '149'
+        startNode: '149'
+        target: '153'
+        type:
+        - WASASSOCIATEDWITH
+    usedFileEdge:
+      value:
+        endNode: '151'
+        id: '141'
+        linknum: 1
+        properties:
+          endNodeRole: None
+          id: 17506cfa-b167-11e9-8725-4c32759a3015
+          startNodeRole: None
+        source: '149'
+        startNode: '149'
+        target: '151'
+        type:
+        - USED
+    usedToolEdge:
+      value:
+        endNode: '150'
+        id: '140'
+        linknum: 1
+        properties:
+          endNodeRole: None
+          id: 174d8768-b167-11e9-8493-4c32759a3015
+          startNodeRole: None
+        source: '149'
+        startNode: '149'
+        target: '150'
+        type:
+        - USED
+
   responses:
     200GraphFound:
       description: Found requested (sub)graph.
@@ -358,13 +474,6 @@ components:
           type: string
       type: object
     D3Graph:
-      example:
-        relationships:
-        - '{}'
-        - '{}'
-        nodes:
-        - '{}'
-        - '{}'
       properties:
         nodes:
           items:
@@ -377,6 +486,28 @@ components:
       title: D3Graph
       type: object
     Neo4jGraph:
+      description: |
+        Note: '$ref' lines in example response are artifacts from OpenAPI schema.
+      example:
+        summary: Example response for a single activity
+        results:
+          columns:
+            - Activity
+            - Reference
+            - Agent
+          data:
+            graph:
+              nodes:
+                - $ref: '#/components/examples/activityNode'
+                - $ref: '#/components/examples/agentNode'
+                - $ref: '#/components/examples/referenceFileNode'
+                - $ref: '#/components/examples/referenceToolNode'
+                - $ref: '#/components/examples/referenceStateNode'
+              relationships:
+                - $ref: '#/components/examples/generatedEdge'
+                - $ref: '#/components/examples/associatedEdge'
+                - $ref: '#/components/examples/usedFileEdge'
+                - $ref: '#/components/examples/usedToolEdge'
       type: object
       title: Neo4jGraph
       properties:
@@ -411,13 +542,7 @@ components:
                           type: array
     Node:
       example:
-        id: '149'
-        labels:
-        - Activity
-        properties:
-          createdAt: '2019-07-28T11:39:54Z'
-          id: 17437146-b167-11e9-9ab3-4c32759a3015
-          name: Shiny App PCA
+          $ref: '#/components/examples/activityNode'
       properties:
         id:
           type: string
