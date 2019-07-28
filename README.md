@@ -1,5 +1,5 @@
 # Provenance Service
-<sup>`develop` branch status: </sup>[![Build Status](https://travis-ci.com/Sage-Bionetworks/prov-service.svg?branch=master)](https://travis-ci.com/Sage-Bionetworks/prov-service) [![Coverage Status](https://coveralls.io/repos/github/Sage-Bionetworks/prov-service/badge.svg?branch=master&service=github)](https://coveralls.io/github/Sage-Bionetworks/prov-service?branch=master&service=github)<a href="https://raw.githubusercontent.com/Sage-Bionetworks/prov-service/develop/synprov/openapi/openapi.yaml"><img src="http://online.swagger.io/validator?url=https://raw.githubusercontent.com/Sage-Bionetworks/prov-service/develop/synprov/openapi/openapi.yaml" alt="Swagger Validator" height="20em" width="72em"></A>
+<sup>`develop` branch status: </sup>[![Build Status](https://travis-ci.com/Sage-Bionetworks/prov-service.svg?branch=master)](https://travis-ci.com/Sage-Bionetworks/prov-service) [![Coverage Status](https://coveralls.io/repos/github/Sage-Bionetworks/prov-service/badge.svg?branch=master&service=github)](https://coveralls.io/github/Sage-Bionetworks/prov-service?branch=master&service=github)
 
 Lightweight implementation of the Synapse Activity services, based on the PROV spec.
 
