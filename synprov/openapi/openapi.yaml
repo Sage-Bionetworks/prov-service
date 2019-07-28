@@ -96,7 +96,7 @@ paths:
         required: true
         schema:
           type: string
-        example: UserID_1
+        example: user0
         style: simple
       - $ref: '#/components/parameters/sortParam'
       - $ref: '#/components/parameters/orderParam'
@@ -121,7 +121,7 @@ paths:
         required: true
         schema:
           type: string
-        example: TargetID_1
+        example: resource0
         style: simple
       - $ref: '#/components/parameters/directionParam'
       - $ref: '#/components/parameters/sortParam'
@@ -234,9 +234,12 @@ components:
       allOf:
       - $ref: '#/components/schemas/ProvNode'
       - example:
-          id: activityId
-          name: name
-          description: agent1 generates entity2 from entity1
+          name: Shiny App PCA
+          class: Tool session
+          description: |
+            PCA was performed on TCGA breast cancer expression data within
+            the Shiny 'Explorer' analysis tool. The state of the app was
+            bookmarked and saved.
         properties:
           class:
             type: string
@@ -246,8 +249,12 @@ components:
       allOf:
       - $ref: '#/components/schemas/ProvNode'
       - example:
-          targetId: entityId
-          targetVersionId: "1"
+          name: TCGA BRCA Expression
+          role: 'dataToInput'
+          targetId: resource0
+          targetVersionId: '1'
+          class: Resource
+          subclass: File
         properties:
           targetVersionId:
             type: string
@@ -266,7 +273,9 @@ components:
       allOf:
       - $ref: '#/components/schemas/ProvNode'
       - example:
-          id: agentId
+          userId: user0
+          name: Sage Scientist
+          role: 'analyst'
         properties:
           userId:
             type: string
@@ -276,20 +285,36 @@ components:
         type: object
     ActivityForm:
       example:
-        generated:
-        - role: role
-          targetId: entity2
-          targetVersionId: 1
-        name: name
-        description: agent1 generates entity2 from entity1
-        id: id
-        used:
-        - role: role
-          targetId: entity1
-          targetVersionId: 1
+        name: Shiny App PCA
+        class: Tool session
+        description: |
+          PCA was performed on TCGA breast cancer expression data within
+          the Shiny 'Explorer' analysis tool. The state of the app was
+          bookmarked and saved.
         agents:
-        - agentId: agent1
-          role: role
+        - userId: user0
+          name: Sage Scientist
+          role: 'analyst'
+        used:
+        - name: Explorer
+          role: 'toolToExecute'
+          targetId: tool0
+          targetVersionId: '1'
+          class: Tool
+          subclass: Tool
+        - name: TCGA BRCA Expression
+          role: 'dataToInput'
+          targetId: resource0
+          targetVersionId: '1'
+          class: Resource
+          subclass: File
+        generated:
+        - name: PCA on TCGA breast cancer dataset
+          role: 'state'
+          targetId: state0
+          targetVersionId: '1'
+          class: Resource
+          subclass: State
       properties:
         used:
           items:
@@ -385,6 +410,14 @@ components:
                             $ref: '#/components/schemas/Edge'
                           type: array
     Node:
+      example:
+        id: '149'
+        labels:
+        - Activity
+        properties:
+          createdAt: '2019-07-28T11:39:54Z'
+          id: 17437146-b167-11e9-9ab3-4c32759a3015
+          name: Shiny App PCA
       properties:
         id:
           type: string
@@ -397,6 +430,19 @@ components:
       title: Node
       type: object
     Edge:
+      example:
+        endNode: '149'
+        id: '161'
+        linknum: 1
+        properties:
+          endNodeRole: None
+          id: 17545718-b167-11e9-8db4-4c32759a3015
+          startNodeRole: state
+        source: '152'
+        startNode: '152'
+        target: '149'
+        type:
+        - WASGENERATEDBY
       properties:
         id:
           type: string
