@@ -22,8 +22,7 @@ paths:
   /activities:
     post:
       description: |-
-        Create a new Activity. If the passed Activity object contains a Used
-        array, you must set the concreteType field of each Used subclass.
+        Create a new Activity.
       operationId: create_activity
       requestBody:
         content:
@@ -39,6 +38,31 @@ paths:
                 $ref: '#/components/schemas/Node'
           description: Success — activity created
       summary: Create a new activity
+      tags:
+      - Activities
+      x-codegen-request-body-name: body
+      x-openapi-router-controller: synprov.controllers.activities_controller
+  /activities/batch:
+    post:
+      description: |-
+        Create multiple new Activities.
+      operationId: create_activity_batch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/ActivityForm'
+              type: array
+        required: true
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: Success — activity created
+      summary: Create multiple new activities
       tags:
       - Activities
       x-codegen-request-body-name: body

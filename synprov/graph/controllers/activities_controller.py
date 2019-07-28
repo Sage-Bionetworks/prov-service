@@ -32,6 +32,19 @@ def create_activity(body=None):  # noqa: E501
         'properties': dict(act_node)
     })
 
+def create_activity_batch(
+    body
+):  # noqa: E501
+    """Create multiple new activities
+
+    Create multiple new Activities. # noqa: E501
+
+    :param body:
+    :type body: list | bytes
+
+    :rtype: List[Node]
+    """
+    return [create_activity(item) for item in body]
 
 def get_activities_graph(sort_by=None, order=None, limit=None):  # noqa: E501
     """Get provenance graph

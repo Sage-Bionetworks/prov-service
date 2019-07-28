@@ -13,7 +13,7 @@ def create_activity(
 ):  # noqa: E501
     """Create a new activity
 
-    Create a new Activity. If the passed Activity object contains a Used array, you must set the concreteType field of each Used subclass. # noqa: E501
+    Create a new Activity. # noqa: E501
 
     :param body: 
     :type body: dict | bytes
@@ -23,6 +23,25 @@ def create_activity(
     if connexion.request.is_json:
         body = ActivityForm.from_dict(connexion.request.get_json())  # noqa: E501
     return controller.create_activity(
+        body=body
+    )
+
+
+def create_activity_batch(
+    body
+):  # noqa: E501
+    """Create multiple new activities
+
+    Create multiple new Activities. # noqa: E501
+
+    :param body: 
+    :type body: list | bytes
+
+    :rtype: Node
+    """
+    if connexion.request.is_json:
+        body = [ActivityForm.from_dict(d) for d in connexion.request.get_json()]  # noqa: E501
+    return controller.create_activity_batch(
         body=body
     )
 
