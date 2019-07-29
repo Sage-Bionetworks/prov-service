@@ -26,10 +26,8 @@ class ActivityBuilder(ActivityForm):
                  **kwargs):
 
         super().__init__(name=name)
-        for kw in kwargs:
-            self.__setattr__(kw, kwargs[kw])
 
-        self.activity = GraphActivity(name=name)
+        self.activity = GraphActivity(name=name, **kwargs)
         self.used = [GraphReference(**u) for u in used]
         self.generated = [GraphReference(**g) for g in generated]
         self.agents = [GraphAgent(**a) for a in agents]
