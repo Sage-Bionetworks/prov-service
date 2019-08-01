@@ -26,10 +26,11 @@ class GraphClient:
          label,
          **node_data
       )
+
       node.__primarylabel__ = label
       node.__primarykey__ = 'id'
       self.graph.merge(node)
-      logger.debug("Created node: {}".format(node))
+      logger.info("Created node: {}".format(node))
 
    def create_relationship(self, relationship):
       rel_data = relationship.to_dict()
@@ -40,6 +41,7 @@ class GraphClient:
       end_node = rel_data.pop('end_node')
       rel_props = ', '.join(['{}:"{}"'.format(k, v)
                              for k, v in rel_data.items()])
+
       query_base = (
          '''
          MATCH (s:{start} {{id:{{start_id}}}}), (e:{end} {{id:{{end_id}}}})

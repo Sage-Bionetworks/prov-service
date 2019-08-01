@@ -78,17 +78,17 @@ class ActivityBuilder(ActivityForm):
 
     def save(self):
         if not self._find_activity():
-            logger.info("Creating new activity")
-            self.activity.create()
+            logger.debug("Creating new activity")
+            self.activity.create(self.gdb.graph)
             self.gdb.create_node(self.activity)
             for u in self.used:
-                u.create()
+                u.create(self.gdb.graph)
                 self.gdb.create_node(u)
             for g in self.generated:
-                g.create()
+                g.create(self.gdb.graph)
                 self.gdb.create_node(g)
             for a in self.agents:
-                a.create()
+                a.create(self.gdb.graph)
                 self.gdb.create_node(a)
             for rel in self.connect_used():
                 rel.create()
