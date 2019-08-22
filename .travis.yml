@@ -35,22 +35,19 @@ before_script:
 # command to run tests
 script:
   - pytest --cov-config=.coveragerc --cov=synprov
-  - if [ "${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}" = "develop" ]; then docker build -f Dockerfile --pull --cache-from "${IMAGE_NAME}:develop" --tag "${IMAGE_NAME}" . ; fi
 
 after_success:
   - coveralls
 
-before_deploy:
-  - docker login -u "${REGISTRY_USER}" -p "${REGISTRY_PASS}" "${REGISTRY_SERVER}"
-  - git_sha="$(git rev-parse --short HEAD)"
-  - docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:develop"
-  - docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${git_sha}-develop"
-
 deploy:
   - provider: script
-    script: docker push "${IMAGE_NAME}:develop" && docker push "${IMAGE_NAME}:${git_sha}-develop"
+    script: bash .build/docker-deploy.sh
     on:
       branch: develop
+  - provider: script
+    script: bash .build/docker-deploy.sh
+    on:
+      tags: true
   - provider: codedeploy
     bucket: "phc-codedeploy-essentials-codedeploys3bucket-jumhvxvmnql0"
     key: deploy.zip
