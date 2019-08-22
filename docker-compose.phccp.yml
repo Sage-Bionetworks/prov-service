@@ -14,7 +14,7 @@ services:
       - /tmp/neo4j/logs:/logs
 
   phccp-prov:
-    image: docker.synapse.org/syn18489221/prov-service:develop
+    image: docker.synapse.org/syn18489221/prov-service:1.0.0-alpha.0
     command: python3 -m synprov
     container_name: phccp-prov
     ports:
