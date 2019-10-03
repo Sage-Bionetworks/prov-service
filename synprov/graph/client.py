@@ -29,8 +29,10 @@ class GraphClient:
 
       node.__primarylabel__ = label
       node.__primarykey__ = 'id'
+      node_count = len(self.graph.nodes)
       self.graph.merge(node)
-      logger.info("Created node: {}".format(node))
+      if len(self.graph.nodes) > node_count:
+         logger.info("Created node: {}".format(node))
 
    def create_relationship(self, relationship):
       rel_data = relationship.to_dict()

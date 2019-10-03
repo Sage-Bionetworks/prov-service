@@ -20,6 +20,14 @@ class TestActivity:
         for a in Activity.attribute_map:
             assert hasattr(activity, a)
 
+    def test__find_node_exists(self, mock_graph_data):
+        activity = GraphActivity(name='Activity_1')
+        a = activity._find_node(graph=mock_graph_data,
+                                label='Activity',
+                                properties={'name': 'Activity_1'})
+        assert a['name'] == 'Activity_1'
+
+
 
 class TestReference:
 
@@ -58,6 +66,32 @@ class TestBuilder:
         assert len(mock_graph_data.nodes) == node_count
         assert len(mock_graph_data.relationships) == rel_count
         assert builder.activity.id == activity_id
+
+    def test_save_similar(self, mock_graph_data, mock_activity_form):
+        mock_activity_form['generated'] = [
+            {
+                'name': 'Reference_X',
+                'target_id': 'TargetID_X',
+                'target_version_id': '1.0',
+                '_class': 'Resource',
+                'subclass': 'State'
+            }
+    ]
+        node_count = len(mock_graph_data.nodes)
+        rel_count = len(mock_graph_data.relationships)
+        builder = ActivityBuilder(
+            **mock_activity_form
+        )
+        activity_id = builder.activity.id
+        builder.save()
+        new_rels = sum([
+            len(mock_activity_form['used']),
+            len(mock_activity_form['generated']),
+            len(mock_activity_form['agents']) * 2,
+        ])
+        assert len(mock_graph_data.nodes) == node_count + 2
+        assert len(mock_graph_data.relationships) == (rel_count + new_rels)
+        assert builder.activity.id != activity_id
 
     def test_save_new(self, mock_graph, mock_activity_form):
         node_count = len(mock_graph.nodes)
