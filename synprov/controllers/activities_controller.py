@@ -46,6 +46,27 @@ def create_activity_batch(
     )
 
 
+def delete_activity_used(
+    id,
+    reference_id
+):  # noqa: E501
+    """Delete &#39;used&#39; reference
+
+    Remove a reference from the list of &#39;used&#39; entities in an Activity.  # noqa: E501
+
+    :param id: activity ID
+    :type id: str
+    :param reference_id: entity ID
+    :type reference_id: str
+
+    :rtype: None
+    """
+    return controller.delete_activity_used(
+        id=id,
+        reference_id=reference_id
+    )
+
+
 def get_activities_graph(
     sort_by='created_at',
     order='desc',

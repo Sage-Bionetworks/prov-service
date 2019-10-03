@@ -83,6 +83,37 @@ paths:
       tags:
       - Activities
       x-openapi-router-controller: synprov.controllers.activities_controller
+  /activities/{id}/used/{referenceId}:
+    delete:
+      description: |
+        Remove a reference from the list of 'used' entities in an Activity.
+      operationId: delete_activity_used
+      parameters:
+      - description: activity ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        example: activity0
+        style: simple
+      - description: entity ID
+        explode: false
+        in: path
+        name: referenceId
+        required: true
+        schema:
+          type: string
+        example: resource0
+        style: simple
+      responses:
+        204:
+          description: Success — 'used' relationship deleted
+      summary: Delete 'used' reference
+      tags:
+      - Activities
+      x-openapi-router-controller: synprov.controllers.activities_controller
   /activities/byAgent/{id}/graph:
     get:
       description: |
