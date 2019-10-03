@@ -11,7 +11,7 @@ from synprov.graph.client import GraphClient
 from synprov.mock.main import create_mock_graph
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
