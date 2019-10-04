@@ -33,9 +33,9 @@ class ActivityBuilder(ActivityForm):
         self.agents = [GraphAgent(**a) for a in agents]
         self.openapi_types.update({'activity': object})
 
-    def _find_activity(self, id=None):
-        if id is not None:
-            return graph.nodes.match('Activity', id=id).first()
+    def _find_activity(self, activity_id=None):
+        if activity_id is not None:
+            return graph.nodes.match('Activity', id=activity_id).first()
         else:
             activities = graph.run(
                 '''
