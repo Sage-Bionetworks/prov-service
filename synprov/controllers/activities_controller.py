@@ -4,8 +4,32 @@ import six
 from synprov.models import ActivityForm  # noqa: E501
 from synprov.models import Neo4jGraph  # noqa: E501
 from synprov.models import Node  # noqa: E501
+from synprov.models import Reference  # noqa: E501
 from synprov import util
 from synprov.graph.controllers import activities_controller as controller
+
+
+def add_activity_used(
+    activity_id,
+    body
+):  # noqa: E501
+    """Add &#39;used&#39; reference
+
+    Add a reference to the list of &#39;used&#39; entities in an Activity.  # noqa: E501
+
+    :param activity_id: activity ID
+    :type activity_id: str
+    :param body: 
+    :type body: dict | bytes
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        body = Reference.from_dict(connexion.request.get_json())  # noqa: E501
+    return controller.add_activity_used(
+        activity_id=activity_id,
+        body=body
+    )
 
 
 def create_activity(

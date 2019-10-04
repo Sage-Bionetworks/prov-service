@@ -7,8 +7,32 @@ import json
 from py2neo import Node, NodeMatcher
 
 from synprov.config import neo4j_connection as graph
-from synprov.graph import ActivityBuilder
+from synprov.graph import ActivityBuilder, ActivityEditor
 from synprov.util import neo4j_to_d3, neo4j_export, convert_keys
+
+
+def add_activity_used(
+    activity_id,
+    body
+):  # noqa: E501
+    """Add &#39;used&#39; reference
+
+    Add a reference to the list of &#39;used&#39; entities in an Activity.  # noqa: E501
+
+    :param activity_id: activity ID
+    :type activity_id: str
+    :param body: 
+    :type body: dict | bytes
+
+    :rtype: None
+    """
+    editor = ActivityEditor(id=activity_id)
+    act_node = editor.append_used(body.to_dict())
+    return convert_keys({
+        'id': str(act_node.identity),
+        'labels': list(act_node.labels),
+        'properties': dict(act_node)
+    })
 
 
 def create_activity(body=None):  # noqa: E501
