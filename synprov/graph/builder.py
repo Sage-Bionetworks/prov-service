@@ -33,18 +33,21 @@ class ActivityBuilder(ActivityForm):
         self.agents = [GraphAgent(**a) for a in agents]
         self.openapi_types.update({'activity': object})
 
-    def _find_activity(self):
-        activities = graph.run(
-            '''
-            WITH {e_ids} as refs
-            MATCH (r:Reference)-[:WASGENERATEDBY]->(act:Activity)
-            WHERE r.target_id in refs
-            WITH act, size(refs) as inputCnt, count(DISTINCT r) as cnt
-            WHERE cnt = inputCnt
-            RETURN act
-            ''',
-            e_ids=[e.target_id for e in self.generated]
-        ).data()
+    def _find_activity(self, activity_id=None):
+        if activity_id is not None:
+            return graph.nodes.match('Activity', id=activity_id).first()
+        else:
+            activities = graph.run(
+                '''
+                WITH {e_ids} as refs
+                MATCH (r:Reference)-[:WASGENERATEDBY]->(act:Activity)
+                WHERE r.target_id in refs
+                WITH act, size(refs) as inputCnt, count(DISTINCT r) as cnt
+                WHERE cnt = inputCnt
+                RETURN act
+                ''',
+                e_ids=[e.target_id for e in self.generated]
+            ).data()
 
         if len(activities) > 1:
             raise ValueError

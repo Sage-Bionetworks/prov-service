@@ -83,7 +83,67 @@ paths:
       tags:
       - Activities
       x-openapi-router-controller: synprov.controllers.activities_controller
-  /activities/byAgent/{id}/graph:
+  /activities/{activityId}/used/{targetId}:
+    delete:
+      description: |
+        Remove a reference from the list of 'used' entities in an Activity.
+      operationId: delete_activity_used
+      parameters:
+      - description: activity ID
+        explode: false
+        in: path
+        name: activityId
+        required: true
+        schema:
+          type: string
+        example: activity0
+        style: simple
+      - description: entity ID
+        explode: false
+        in: path
+        name: targetId
+        required: true
+        schema:
+          type: string
+        example: resource0
+        style: simple
+      responses:
+        204:
+          description: Success — 'used' relationship deleted
+      summary: Delete 'used' reference
+      tags:
+      - Activities
+      x-openapi-router-controller: synprov.controllers.activities_controller
+  /activities/{activityId}/used:
+    put:
+      description: |
+        Add a reference to the list of 'used' entities in an Activity.
+      operationId: add_activity_used
+      parameters:
+      - description: activity ID
+        explode: false
+        in: path
+        name: activityId
+        required: true
+        schema:
+          type: string
+        example: activity0
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reference'
+        required: true
+      responses:
+        201:
+          description: Success — 'used' relationship created
+      summary: Add 'used' reference
+      tags:
+      - Activities
+      x-codegen-request-body-name: body
+      x-openapi-router-controller: synprov.controllers.activities_controller
+  /activities/byAgent/{userId}/graph:
     get:
       description: |
         Retrieve the nodes and relationships in a neighborhood around a specified user.
@@ -92,7 +152,7 @@ paths:
       - description: user ID
         explode: false
         in: path
-        name: id
+        name: userId
         required: true
         schema:
           type: string
@@ -108,7 +168,7 @@ paths:
       tags:
       - Activities
       x-openapi-router-controller: synprov.controllers.activities_controller
-  /activities/byReference/{id}/graph:
+  /activities/byReference/{targetId}/graph:
     get:
       description: |
         Retrieve the nodes and relationships in a neighborhood around a specified entity.
@@ -117,7 +177,7 @@ paths:
       - description: entity ID
         explode: false
         in: path
-        name: id
+        name: targetId
         required: true
         schema:
           type: string

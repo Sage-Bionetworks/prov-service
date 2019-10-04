@@ -7,8 +7,32 @@ import json
 from py2neo import Node, NodeMatcher
 
 from synprov.config import neo4j_connection as graph
-from synprov.graph import ActivityBuilder
+from synprov.graph import ActivityBuilder, ActivityEditor
 from synprov.util import neo4j_to_d3, neo4j_export, convert_keys
+
+
+def add_activity_used(
+    activity_id,
+    body
+):  # noqa: E501
+    """Add &#39;used&#39; reference
+
+    Add a reference to the list of &#39;used&#39; entities in an Activity.  # noqa: E501
+
+    :param activity_id: activity ID
+    :type activity_id: str
+    :param body: 
+    :type body: dict | bytes
+
+    :rtype: None
+    """
+    editor = ActivityEditor(id=activity_id)
+    act_node = editor.append_used(body.to_dict())
+    return convert_keys({
+        'id': str(act_node.identity),
+        'labels': list(act_node.labels),
+        'properties': dict(act_node)
+    })
 
 
 def create_activity(body=None):  # noqa: E501
@@ -32,6 +56,7 @@ def create_activity(body=None):  # noqa: E501
         'properties': dict(act_node)
     })
 
+
 def create_activity_batch(
     body
 ):  # noqa: E501
@@ -45,6 +70,36 @@ def create_activity_batch(
     :rtype: List[Node]
     """
     return [create_activity(item) for item in body]
+
+
+def delete_activity_used(
+    activity_id,
+    target_id
+):  # noqa: E501
+    """Delete &#39;used&#39; reference
+
+    Remove a reference from the list of &#39;used&#39; entities in an Activity.  # noqa: E501
+
+    :param id: activity ID
+    :type id: str
+    :param reference_id: entity ID
+    :type reference_id: str
+
+    :rtype: Node
+    """
+    query_base = (
+        '''
+        MATCH (t:Reference {target_id: {target_id}})<-[r:USED]-(s:Activity {id: {activity_id}})
+        DELETE r
+        '''
+    )
+
+    graph.run(
+        query_base,
+        activity_id=activity_id,
+        target_id=target_id
+    )
+
 
 def get_activities_graph(sort_by=None, order=None, limit=None):  # noqa: E501
     """Get provenance graph
@@ -82,13 +137,18 @@ def get_activities_graph(sort_by=None, order=None, limit=None):  # noqa: E501
     return convert_keys(neo4j_export(results.data()))
 
 
-def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
+def get_agent_subgraph(
+    user_id,
+    sort_by='created_at',
+    order='desc',
+    limit=3
+):  # noqa: E501
     """Get subgraph connected to an agent
 
     Retrieve the nodes and relationships in a neighborhood around a specified user.  # noqa: E501
 
-    :param id: user ID
-    :type id: str
+    :param user_id: user ID
+    :type user_id: str
     :param sort_by: logic by which to sort matched activities
     :type sort_by: str
     :param order: sort order (ascending or descending)
@@ -100,7 +160,7 @@ def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
     """
     query_base = (
         '''
-        MATCH (t:Agent {{user_id: {{id}}}})<-[r:WASASSOCIATEDWITH]-(s:Activity)
+        MATCH (t:Agent {{user_id: {{user_id}}}})<-[r:WASASSOCIATEDWITH]-(s:Activity)
         WITH s
         ORDER BY s.{key}{dir}
         WITH collect(s) as activities
@@ -116,22 +176,24 @@ def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
 
     results = graph.run(
         query_base,
-        id=id
+        user_id=user_id
     )
     return convert_keys(neo4j_export(results.data()))
 
 
-def get_reference_subgraph(id,
-                           direction='down',
-                           sort_by='created_at',
-                           order='desc',
-                           limit=3):  # noqa: E501
+def get_reference_subgraph(
+    target_id,
+    direction='down',
+    sort_by='created_at',
+    order='desc',
+    limit=3
+):  # noqa: E501
     """Get subgraph connected to an entity
 
     Retrieve the nodes and relationships in a neighborhood around a specified entity.  # noqa: E501
 
-    :param id: entity ID
-    :type id: str
+    :param target_id: entity ID
+    :type target_id: str
     :param direction: direction in which to collect connected activities
     :type direction: str
     :param sort_by: logic by which to sort matched activities
@@ -149,7 +211,7 @@ def get_reference_subgraph(id,
     }
     query_base = (
         '''
-        MATCH (t:Reference {{target_id: {{id}}}}){dir_rel}(s:Activity)
+        MATCH (t:Reference {{target_id: {{target_id}}}}){dir_rel}(s:Activity)
         WITH s
         ORDER BY s.{key}{dir}
         WITH collect(s) as activities
@@ -166,6 +228,6 @@ def get_reference_subgraph(id,
 
     results = graph.run(
         query_base,
-        id=id
+        target_id=target_id
     )
     return convert_keys(neo4j_export(results.data()))
