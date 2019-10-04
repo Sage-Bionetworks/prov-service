@@ -83,7 +83,7 @@ paths:
       tags:
       - Activities
       x-openapi-router-controller: synprov.controllers.activities_controller
-  /activities/{id}/used/{referenceId}:
+  /activities/{activityId}/used/{targetId}:
     delete:
       description: |
         Remove a reference from the list of 'used' entities in an Activity.
@@ -92,7 +92,7 @@ paths:
       - description: activity ID
         explode: false
         in: path
-        name: id
+        name: activityId
         required: true
         schema:
           type: string
@@ -101,7 +101,7 @@ paths:
       - description: entity ID
         explode: false
         in: path
-        name: referenceId
+        name: targetId
         required: true
         schema:
           type: string
@@ -114,7 +114,7 @@ paths:
       tags:
       - Activities
       x-openapi-router-controller: synprov.controllers.activities_controller
-  /activities/byAgent/{id}/graph:
+  /activities/byAgent/{userId}/graph:
     get:
       description: |
         Retrieve the nodes and relationships in a neighborhood around a specified user.
@@ -123,7 +123,7 @@ paths:
       - description: user ID
         explode: false
         in: path
-        name: id
+        name: userId
         required: true
         schema:
           type: string
@@ -139,7 +139,7 @@ paths:
       tags:
       - Activities
       x-openapi-router-controller: synprov.controllers.activities_controller
-  /activities/byReference/{id}/graph:
+  /activities/byReference/{targetId}/graph:
     get:
       description: |
         Retrieve the nodes and relationships in a neighborhood around a specified entity.
@@ -148,7 +148,7 @@ paths:
       - description: entity ID
         explode: false
         in: path
-        name: id
+        name: targetId
         required: true
         schema:
           type: string

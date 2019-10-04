@@ -47,23 +47,23 @@ def create_activity_batch(
 
 
 def delete_activity_used(
-    id,
-    reference_id
+    activity_id,
+    target_id
 ):  # noqa: E501
     """Delete &#39;used&#39; reference
 
     Remove a reference from the list of &#39;used&#39; entities in an Activity.  # noqa: E501
 
-    :param id: activity ID
-    :type id: str
-    :param reference_id: entity ID
-    :type reference_id: str
+    :param activity_id: activity ID
+    :type activity_id: str
+    :param target_id: entity ID
+    :type target_id: str
 
     :rtype: None
     """
     return controller.delete_activity_used(
-        id=id,
-        reference_id=reference_id
+        activity_id=activity_id,
+        target_id=target_id
     )
 
 
@@ -93,7 +93,7 @@ def get_activities_graph(
 
 
 def get_agent_subgraph(
-    id,
+    user_id,
     sort_by='created_at',
     order='desc',
     limit=3
@@ -102,8 +102,8 @@ def get_agent_subgraph(
 
     Retrieve the nodes and relationships in a neighborhood around a specified user.  # noqa: E501
 
-    :param id: user ID
-    :type id: str
+    :param user_id: user ID
+    :type user_id: str
     :param sort_by: logic by which to sort matched activities
     :type sort_by: str
     :param order: sort order (ascending or descending)
@@ -114,7 +114,7 @@ def get_agent_subgraph(
     :rtype: Neo4jGraph
     """
     return controller.get_agent_subgraph(
-        id=id,
+        user_id=user_id,
         sort_by=sort_by,
         order=order,
         limit=limit
@@ -122,7 +122,7 @@ def get_agent_subgraph(
 
 
 def get_reference_subgraph(
-    id,
+    target_id,
     direction='down',
     sort_by='created_at',
     order='desc',
@@ -132,8 +132,8 @@ def get_reference_subgraph(
 
     Retrieve the nodes and relationships in a neighborhood around a specified entity.  # noqa: E501
 
-    :param id: entity ID
-    :type id: str
+    :param target_id: entity ID
+    :type target_id: str
     :param direction: direction in which to collect connected activities
     :type direction: str
     :param sort_by: logic by which to sort matched activities
@@ -146,7 +146,7 @@ def get_reference_subgraph(
     :rtype: Neo4jGraph
     """
     return controller.get_reference_subgraph(
-        id=id,
+        target_id=target_id,
         direction=direction,
         sort_by=sort_by,
         order=order,

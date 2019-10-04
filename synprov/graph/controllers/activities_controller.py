@@ -32,6 +32,7 @@ def create_activity(body=None):  # noqa: E501
         'properties': dict(act_node)
     })
 
+
 def create_activity_batch(
     body
 ):  # noqa: E501
@@ -48,8 +49,8 @@ def create_activity_batch(
 
 
 def delete_activity_used(
-    id,
-    reference_id
+    activity_id,
+    target_id
 ):  # noqa: E501
     """Delete &#39;used&#39; reference
 
@@ -64,15 +65,15 @@ def delete_activity_used(
     """
     query_base = (
         '''
-        MATCH (t:Reference {target_id: {reference_id}})<-[r:USED]-(s:Activity {id: {id}})
+        MATCH (t:Reference {target_id: {target_id}})<-[r:USED]-(s:Activity {id: {activity_id}})
         DELETE r
         '''
     )
 
     graph.run(
         query_base,
-        id=id,
-        reference_id=reference_id
+        activity_id=activity_id,
+        target_id=target_id
     )
 
 
@@ -112,13 +113,18 @@ def get_activities_graph(sort_by=None, order=None, limit=None):  # noqa: E501
     return convert_keys(neo4j_export(results.data()))
 
 
-def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
+def get_agent_subgraph(
+    user_id,
+    sort_by='created_at',
+    order='desc',
+    limit=3
+):  # noqa: E501
     """Get subgraph connected to an agent
 
     Retrieve the nodes and relationships in a neighborhood around a specified user.  # noqa: E501
 
-    :param id: user ID
-    :type id: str
+    :param user_id: user ID
+    :type user_id: str
     :param sort_by: logic by which to sort matched activities
     :type sort_by: str
     :param order: sort order (ascending or descending)
@@ -130,7 +136,7 @@ def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
     """
     query_base = (
         '''
-        MATCH (t:Agent {{user_id: {{id}}}})<-[r:WASASSOCIATEDWITH]-(s:Activity)
+        MATCH (t:Agent {{user_id: {{user_id}}}})<-[r:WASASSOCIATEDWITH]-(s:Activity)
         WITH s
         ORDER BY s.{key}{dir}
         WITH collect(s) as activities
@@ -146,22 +152,24 @@ def get_agent_subgraph(id, sort_by=None, order=None, limit=None):  # noqa: E501
 
     results = graph.run(
         query_base,
-        id=id
+        user_id=user_id
     )
     return convert_keys(neo4j_export(results.data()))
 
 
-def get_reference_subgraph(id,
-                           direction='down',
-                           sort_by='created_at',
-                           order='desc',
-                           limit=3):  # noqa: E501
+def get_reference_subgraph(
+    target_id,
+    direction='down',
+    sort_by='created_at',
+    order='desc',
+    limit=3
+):  # noqa: E501
     """Get subgraph connected to an entity
 
     Retrieve the nodes and relationships in a neighborhood around a specified entity.  # noqa: E501
 
-    :param id: entity ID
-    :type id: str
+    :param target_id: entity ID
+    :type target_id: str
     :param direction: direction in which to collect connected activities
     :type direction: str
     :param sort_by: logic by which to sort matched activities
@@ -179,7 +187,7 @@ def get_reference_subgraph(id,
     }
     query_base = (
         '''
-        MATCH (t:Reference {{target_id: {{id}}}}){dir_rel}(s:Activity)
+        MATCH (t:Reference {{target_id: {{target_id}}}}){dir_rel}(s:Activity)
         WITH s
         ORDER BY s.{key}{dir}
         WITH collect(s) as activities
@@ -196,6 +204,6 @@ def get_reference_subgraph(id,
 
     results = graph.run(
         query_base,
-        id=id
+        target_id=target_id
     )
     return convert_keys(neo4j_export(results.data()))
