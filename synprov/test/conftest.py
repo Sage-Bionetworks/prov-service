@@ -43,6 +43,12 @@ def mock_graph_data(mock_graph):
 
 
 @pytest.fixture(scope='function')
+def mock_activity_id(mock_graph_data):
+    activity_node = graph.nodes.match('Activity').first()
+    yield activity_node['id']
+
+
+@pytest.fixture(scope='function')
 def mock_activity_form():
     used = [
         {
