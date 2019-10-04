@@ -114,6 +114,35 @@ paths:
       tags:
       - Activities
       x-openapi-router-controller: synprov.controllers.activities_controller
+  /activities/{activityId}/used:
+    put:
+      description: |
+        Add a reference to the list of 'used' entities in an Activity.
+      operationId: add_activity_used
+      parameters:
+      - description: activity ID
+        explode: false
+        in: path
+        name: activityId
+        required: true
+        schema:
+          type: string
+        example: activity0
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reference'
+        required: true
+      responses:
+        201:
+          description: Success — 'used' relationship created
+      summary: Add 'used' reference
+      tags:
+      - Activities
+      x-codegen-request-body-name: body
+      x-openapi-router-controller: synprov.controllers.activities_controller
   /activities/byAgent/{userId}/graph:
     get:
       description: |
