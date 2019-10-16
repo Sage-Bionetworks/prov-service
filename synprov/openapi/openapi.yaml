@@ -197,6 +197,33 @@ paths:
       tags:
       - Activities
       x-openapi-router-controller: synprov.controllers.activities_controller
+  /activities/byReference/{targetId}:
+    get:
+      description: |
+        Retrieve the Activity objects in a neighborhood around a specified entity.
+      operationId: get_reference_activities
+      parameters:
+      - description: entity ID
+        explode: false
+        in: path
+        name: targetId
+        required: true
+        schema:
+          type: string
+        example: resource0
+        style: simple
+      - $ref: '#/components/parameters/directionParam'
+      - $ref: '#/components/parameters/sortParam'
+      - $ref: '#/components/parameters/orderParam'
+      - $ref: '#/components/parameters/limitParam'
+      - $ref: '#/components/parameters/filterParam'
+      responses:
+        200:
+          $ref: '#/components/responses/200ActivitiesFound'
+      summary: Get subgraph connected to an entity
+      tags:
+      - Activities
+      x-openapi-router-controller: synprov.controllers.activities_controller
 components:
   examples:
     activityNode:
@@ -323,6 +350,14 @@ components:
             # oneOf:
             #   - $ref: '#/components/schemas/D3Graph'
             $ref: '#/components/schemas/Neo4jGraph'
+    200ActivitiesFound:
+      description: Found requested Activities.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Activity'
     404NotFound:
       description: The specified resource was not found.
   parameters:
