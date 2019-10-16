@@ -172,6 +172,14 @@ def convert_keys(obj):
         return obj
 
 
+def quote_string(string):
+    try:
+        json.loads(string)
+    except json.JSONDecodeError:
+        string = json.dumps(string)
+    return string
+
+
 def get_datetime(now=None):
     if now is None:
         now = datetime.datetime.now()

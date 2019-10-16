@@ -76,6 +76,7 @@ paths:
       - $ref: '#/components/parameters/sortParam'
       - $ref: '#/components/parameters/orderParam'
       - $ref: '#/components/parameters/limitParam'
+      - $ref: '#/components/parameters/filterParam'
       responses:
         200:
           $ref: '#/components/responses/200GraphFound'
@@ -161,6 +162,7 @@ paths:
       - $ref: '#/components/parameters/sortParam'
       - $ref: '#/components/parameters/orderParam'
       - $ref: '#/components/parameters/limitParam'
+      - $ref: '#/components/parameters/filterParam'
       responses:
         200:
           $ref: '#/components/responses/200GraphFound'
@@ -187,6 +189,7 @@ paths:
       - $ref: '#/components/parameters/sortParam'
       - $ref: '#/components/parameters/orderParam'
       - $ref: '#/components/parameters/limitParam'
+      - $ref: '#/components/parameters/filterParam'
       responses:
         200:
           $ref: '#/components/responses/200GraphFound'
@@ -375,6 +378,18 @@ components:
         - created_at
         type: string
       style: form
+    filterParam:
+      description: >-
+        filter results using Lucene Query Syntax in the format of
+        propertyName:value, propertyName:[num1 TO num2] and date
+        range format, propertyName:[yyyyMMdd TO yyyyMMdd]
+      explode: false
+      in: query
+      name: q
+      required: false
+      schema:
+        type: string
+        default: '*:*'
     orderParam:
       description: sort order (ascending or descending)
       explode: true

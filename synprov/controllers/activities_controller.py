@@ -94,7 +94,8 @@ def delete_activity_used(
 def get_activities_graph(
     sort_by='created_at',
     order='desc',
-    limit=3
+    limit=3,
+    q='*:*'
 ):  # noqa: E501
     """Get provenance graph
 
@@ -106,13 +107,16 @@ def get_activities_graph(
     :type order: str
     :param limit: maximum number of connected activities to return
     :type limit: int
+    :param q: filter results using Lucene Query Syntax in the format of propertyName:value, propertyName:[num1 TO num2] and date range format, propertyName:[yyyyMMdd TO yyyyMMdd]
+    :type q: str
 
     :rtype: Neo4jGraph
     """
     return controller.get_activities_graph(
         sort_by=sort_by,
         order=order,
-        limit=limit
+        limit=limit,
+        q=q
     )
 
 
@@ -120,7 +124,8 @@ def get_agent_subgraph(
     user_id,
     sort_by='created_at',
     order='desc',
-    limit=3
+    limit=3,
+    q='*:*'
 ):  # noqa: E501
     """Get subgraph connected to an agent
 
@@ -134,6 +139,8 @@ def get_agent_subgraph(
     :type order: str
     :param limit: maximum number of connected activities to return
     :type limit: int
+    :param q: filter results using Lucene Query Syntax in the format of propertyName:value, propertyName:[num1 TO num2] and date range format, propertyName:[yyyyMMdd TO yyyyMMdd]
+    :type q: str
 
     :rtype: Neo4jGraph
     """
@@ -141,7 +148,8 @@ def get_agent_subgraph(
         user_id=user_id,
         sort_by=sort_by,
         order=order,
-        limit=limit
+        limit=limit,
+        q=q
     )
 
 
@@ -150,7 +158,8 @@ def get_reference_subgraph(
     direction='down',
     sort_by='created_at',
     order='desc',
-    limit=3
+    limit=3,
+    q='*:*'
 ):  # noqa: E501
     """Get subgraph connected to an entity
 
@@ -166,6 +175,8 @@ def get_reference_subgraph(
     :type order: str
     :param limit: maximum number of connected activities to return
     :type limit: int
+    :param q: filter results using Lucene Query Syntax in the format of propertyName:value, propertyName:[num1 TO num2] and date range format, propertyName:[yyyyMMdd TO yyyyMMdd]
+    :type q: str
 
     :rtype: Neo4jGraph
     """
@@ -174,5 +185,6 @@ def get_reference_subgraph(
         direction=direction,
         sort_by=sort_by,
         order=order,
-        limit=limit
+        limit=limit,
+        q=q
     )
