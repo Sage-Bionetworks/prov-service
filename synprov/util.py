@@ -247,6 +247,10 @@ def _convert_relationship(neo4j_rel):
     }
 
 
+def node_to_dict(neo4j_node):
+    return convert_keys(dict(neo4j_node))
+
+
 def is_open(ip, port):
    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
    try:
