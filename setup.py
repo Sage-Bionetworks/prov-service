@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 
 NAME = "synprov"
-VERSION = "0.4.0"
+VERSION = "0.4.0" # TODO: bump this number up after sbcp update
 
 # To install the library, run the following
 #

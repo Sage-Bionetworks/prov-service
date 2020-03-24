@@ -9,3 +9,4 @@ iso8601 >= 0.1.12
 pytz >= 2019.1
 click == 7.0
 luqum == 0.8.0
+Werkzeug==0.16.1
