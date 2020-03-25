@@ -1,9 +1,9 @@
 version: '3.2'
 
 services:
-  phccp-neo4j:
-    image: docker.synapse.org/syn18489221/phccp-neo4j
-    container_name: phccp-neo4j
+  sbcp-neo4j:
+    image: graphfoundation/ongdb:3.5
+    container_name: sbcp-neo4j
     ports:
       - "7687:7687"
       - "7474:7474"
@@ -13,18 +13,18 @@ services:
       - /tmp/neo4j/data:/var/lib/neo4j/data
       - /tmp/neo4j/logs:/logs
 
-  phccp-prov:
-    image: docker.synapse.org/syn18489221/prov-service:1.0.0-alpha.1
+  sbcp-prov:
+    image: sagebionetworks/prov-service
     command: python3 -m synprov
-    container_name: phccp-prov
+    container_name: sbcp-prov
     ports:
       - "8080:8080"
     environment:
       NEO4J_SCHEME: bolt
-      NEO4J_HOST: phccp-neo4j
+      NEO4J_HOST: sbcp-neo4j
       NEO4J_PORT: 7687
       NEO4J_USERNAME: ${NEO4J_USERNAME}
       NEO4J_PASSWORD: ${NEO4J_PASSWORD}
       FLASK_HOST: "0.0.0.0"
     links:
-      - phccp-neo4j
+      - sbcp-neo4j

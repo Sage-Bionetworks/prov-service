@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 
 NAME = "synprov"
-VERSION = "0.4.0"
+VERSION = "0.4.0" # TODO: bump this number up after sbcp update
 
 # To install the library, run the following
 #
@@ -14,7 +14,7 @@ VERSION = "0.4.0"
 # http://pypi.python.org/pypi/setuptools
 
 REQUIRES = [
-    "connexion==2.0.0",
+    "connexion==2.0.2",
     "swagger-ui-bundle==0.0.2",
     "python_dateutil==2.6.0"
 ]
